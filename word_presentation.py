@@ -34,7 +34,7 @@ class ApplicationInterface(object):
 
 class AssignmentModel(object):
   def __init__(self, appInterface, stimuli):
-    self.__appInterface = appInterface
+    self.__app_interface = appInterface
     
     def makeWordItem(wordDict):
       wi = WordItem(s["word"].strip().lower())
@@ -65,7 +65,7 @@ class AssignmentModel(object):
     
   def run(self):
     mainTimer = getTime
-    self.__appInterface.displayInstructions()
+    self.__app_interface.displayInstructions()
 
     totalTestTimer = CountdownTimer(TOTAL_TEST_DURATION)
     inbetweenSessionCountdown = CountdownTimer(TEST_BLOCK_DURATION)
@@ -98,15 +98,15 @@ class AssignmentModel(object):
 
       if len(stimulus.presentations) == 0:
         # First presentation of stimulus
-        self.__appInterface.learn(stimulus.image, stimulus.name, stimulus.translation)
+        self.__app_interface.learn(stimulus.image, stimulus.name, stimulus.translation)
       else:
         # Second presentations of stimulus
-        response = self.__appInterface.test(stimulus.name)
+        response = self.__app_interface.test(stimulus.name)
         
         if response.lower() == stimulus.translation.lower():
           self.currentScore += CORRECT_ANSWER_SCORE
-          self.__appInterface.updateHighscore(self.currentScore)
-          self.__appInterface.displayCorrect(response, stimulus.translation)
+          self.__app_interface.updateHighscore(self.currentScore)
+          self.__app_interface.displayCorrect(response, stimulus.translation)
           repeat = False
         else:
           stimulus.alpha += ALPHA_ERROR_ADJUSTMENT_SUMMAND
@@ -114,9 +114,9 @@ class AssignmentModel(object):
           
           mixedUpWord = self.findMixedUpWord(response)
           if mixedUpWord:
-            self.__appInterface.mixedup(stimulus.name, stimulus.translation, mixedUpWord.name, mixedUpWord.translation)
+            self.__app_interface.mixedup(stimulus.name, stimulus.translation, mixedUpWord.name, mixedUpWord.translation)
           else:
-            self.__appInterface.displayWrong(response, stimulus.translation, stimulus.image)
+            self.__app_interface.displayWrong(response, stimulus.translation, stimulus.image)
 
       newPresentation.time = presentationStartTime
       stimulus.presentations.append(newPresentation)
@@ -133,5 +133,5 @@ class AssignmentModel(object):
               imageWordPairs[stimulus.image] = [translationData]
               imageSequence.append(stimulus.image)
         
-        self.__appInterface.startInbetweenSession([(image, imageWordPairs[image]) for image in imageSequence])
+        self.__app_interface.startInbetweenSession([(image, imageWordPairs[image]) for image in imageSequence])
         inbetweenSessionCountdown = CountdownTimer(TEST_BLOCK_DURATION)

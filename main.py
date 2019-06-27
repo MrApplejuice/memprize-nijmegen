@@ -27,7 +27,7 @@ def setLineStrikethrough(textStim, lineStim):
 
 IMAGES_SIZE = 1.3
 IMAGES_LOCATION = (0, 1 - (IMAGES_SIZE / 2 + 0.05))
-def loadAllImages(win, imagePathList):
+def load_all_images(win, imagePathList):
   result = {}
   for path in imagePathList:
     if path not in result:
@@ -500,7 +500,7 @@ Parameter:
     instructionTexts = CSVDictList()
     instructionTexts.load("resources/instructions.csv")
     
-    allImages = loadAllImages(mainWindow, [x["image"] for x in stimuli])
+    allImages = load_all_images(mainWindow, [x["image"] for x in stimuli])
 
     # Initialize different "scenes"
     movieViewer = MovieViewer(mainWindow)

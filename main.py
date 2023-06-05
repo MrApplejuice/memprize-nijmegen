@@ -14,12 +14,27 @@ from dict_csv_serializer import CSVDictList
 import psychopy.core as core
 import psychopy.visual as visual
 import psychopy.gui as gui
+from psychopy.colors import Color
+
+PROBED_WIDTH_FACTOR = None
 
 def determineTextWidth(fontStimulus):
+  global PROBED_WIDTH_FACTOR
+
+  if PROBED_WIDTH_FACTOR is None:
+    from psychopy.tools.monitorunittools import posToPix
+
+    probe = visual.TextStim(fontStimulus.win, height=0.1, pos=(0, 0), alignHoriz='left')
+    probe.text = ""
+    print("Probing")
+    probe.pos = (0, 0)
+    x0 = posToPix(probe)[0]
+    probe.pos = (1, 0)
+    x1 = posToPix(probe)[0]
+    PROBED_WIDTH_FACTOR = x1 - x0
+
   # Determine text width using psychopy's pyglet infrastructure
-  glyphList = fontStimulus._font.get_glyphs(fontStimulus.text)
-  thisPixWidth = sum([0] + [x.advance for x in glyphList])
-  return thisPixWidth * fontStimulus.height / fontStimulus._fontHeightPix / 1.5
+  return fontStimulus.boundingBox[0] / PROBED_WIDTH_FACTOR
 
 def setLineStrikethrough(textStim, lineStim):
   lineStim.start = (textStim.pos[0], textStim.pos[1] - 0.01)
@@ -157,11 +172,11 @@ class TestWordViewer(LearnWordViewer):
     
     self.wordText = visual.TextStim(win, pos=self.UPPER_TEXT_POS, alignHoriz='left')
     self.typedText = visual.TextStim(win, pos=self.LOWER_TEXT_POS, alignHoriz='left')
-    self.correctAnswer = visual.TextStim(win, pos=self.LOWER_TEXT_POS, alignHoriz='left', color=(0, 1, 0))
-    self.strikeThroughLine = visual.Line(win, lineColor=(1, 0, 0), lineWidth=10)
+    self.correctAnswer = visual.TextStim(win, pos=self.LOWER_TEXT_POS, alignHoriz='left', color=Color((0, 1, 0), "rgb1"))
+    self.strikeThroughLine = visual.Line(win, lineColor=(255, 0, 0), lineColorSpace="rgb255", opacity=1, lineWidth=5)
     
   def test(self, word):
-    self.typedText.color = (1, 1, 1)
+    self.typedText.color = Color((1, 1, 1), "rgb1")
 
     self.wordText.text = word 
     self.wordText.autoDraw = True
@@ -197,14 +212,14 @@ class TestWordViewer(LearnWordViewer):
     self.wordText.autoDraw = True
     self.typedText.autoDraw = True
     
-    self.typedText.color = (0, 1, 0)
+    self.typedText.color = Color((0, 1, 0), "rgb1")
     recordKeyboardInputs(self.__win, None, countdown=core.CountdownTimer(0.3))
 
     self.wordText.autoDraw = False
     self.typedText.autoDraw = False
 
   def showStrikthroughLine(self):
-    self.typedText.color = (1, 0, 0)
+    self.typedText.color = Color((1, 0, 0), "rgb1")
 
     self.typedText.draw()
     setLineStrikethrough(self.typedText, self.strikeThroughLine)
@@ -282,7 +297,7 @@ class MixedUpViewer(object):
     self.lowerTexts[1].text = rightLower
 
     for t in self.upperTexts + self.lowerTexts:
-      t.color = (1, 1, 1)
+      t.color = Color((1, 1, 1), "rgb1")
       t.autoDraw = True
     self.strikeThroughLine.autoDraw = False
       
@@ -345,7 +360,7 @@ class HighscoreViewer(object):
     self.updateHighscore(self.__score)
     self.highscoreText.autoDraw = True
     
-    self.animationTextStim = visual.TextStim(win, pos=(0.0, 0.0), color=(0, 1, 0), alignHoriz='center', height=0.14)
+    self.animationTextStim = visual.TextStim(win, pos=(0.0, 0.0), color=Color((0, 1, 0), "rgb1"), alignHoriz='center', height=0.14)
     self.animationStartTime = None
     self.animationText = ""
     
@@ -467,21 +482,21 @@ def showParticipantDataDialog():
   if not dlg.OK:
     return None
   else:
-    return dict(zip(("participant_id", "participant_age", "participant_gender"), dlg.data))
+    return dict(list(zip(("participant_id", "participant_age", "participant_gender"), dlg.data)))
 
 if __name__ == '__main__':
   if ("?" in sys.argv[1:]) or ("help" in sys.argv[1:]):
-    print """
+    print("""
 Usage:
   python main [windowed]
   
 Parameter:
   fullscreen    Specify the parameter "fullscreen" to start the application in fullscreen mode
-"""
+""")
   else:
     fullscreenMode = "fullscreen" in sys.argv[1:]
     
-    print "Starting in", "fullscreen" if fullscreenMode else "window", "mode"
+    print(("Starting in", "fullscreen" if fullscreenMode else "window", "mode"))
     
     participantInfo = showParticipantDataDialog()
     if participantInfo is None:
@@ -491,7 +506,7 @@ Parameter:
     animationWindow = mainWindow
     if mainWindow.winType != "pyglet":
       raise ValueError("Cannot only determine font widths for non-pyglet fonts")
-    print "Main window uses backend: ", mainWindow.winType
+    print(("Main window uses backend: ", mainWindow.winType))
 
     # Load stimuli
     stimuli = CSVDictList()
@@ -544,13 +559,13 @@ Parameter:
       
       for d in assignmentModel.stimuliSummary:
         d["time"] = nowString
-        d = dict(participantInfo.items() + d.items())
+        d = dict(list(participantInfo.items()) + list(d.items()))
         learnDataList.append(d)
       
       learnDataList.save(targetFilename)
 
     def handleTermination(signal, frame):
-      print "Saving session data before termination"
+      print("Saving session data before termination")
       saveData()
       sys.exit(1)
       

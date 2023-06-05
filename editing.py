@@ -41,7 +41,7 @@ def recordKeyboardInputs(win, textField, finish_key='return', clock=None, give_s
       if key[0] in KEY_TRANSLATION_TABLE:
         key = (KEY_TRANSLATION_TABLE[key[0]], key[1])
         
-      if key[0] in u'abcdefghijklmnopqrstuvwxyz0123456789 .,!?-;:äüöß':
+      if key[0] in 'abcdefghijklmnopqrstuvwxyz0123456789 .,!?-;:äüöß':
         text += key[0]
       elif key[0] == finish_key:
         doRecord = False

@@ -29,24 +29,24 @@ class CSVDictList(object):
       self.__headers.append(name)
     
   def load(self, filename):
-    with open(filename, "rb") as f:
+    with open(filename, "r") as f:
       csvreader = csv.reader(f)
-      newHeaders = csvreader.next()
+      newHeaders = next(csvreader)
       newEntries = []
       
       for lineCounter, csvline in enumerate(csvreader):
         if len(csvline) > len(newHeaders):
           raise ValueError("More columns than headers in line {}".format(lineCounter + 2))
-        newEntries.append(self.CSVListEntry(dict(zip(newHeaders, [(None if v == "" else v.decode('utf-8')) for v in csvline] + [None] * (len(newHeaders) - len(csvline)))), self))
+        newEntries.append(self.CSVListEntry(dict(list(zip(newHeaders, [(None if v == "" else v) for v in csvline] + [None] * (len(newHeaders) - len(csvline))))), self))
     self.__headers = newHeaders
     self.__entries = newEntries
     
   def save(self, filename):
-    with open(filename, "wb") as f:
+    with open(filename, "w") as f:
       csvwriter = csv.writer(f)
       csvwriter.writerow(self.__headers)
       for entry in self:
-        csvwriter.writerow([('' if entry[h] is None else unicode(entry[h]).encode('utf-8')) for h in self.__headers])
+        csvwriter.writerow([('' if entry[h] is None else str(entry[h])) for h in self.__headers])
       
   def __getitem__(self, i):
     return self.__entries[i]

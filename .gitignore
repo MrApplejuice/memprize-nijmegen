@@ -1,4 +1,3 @@
 *.pyc
 /resources/images
 learn-data-summary.csv
-Pipfile*

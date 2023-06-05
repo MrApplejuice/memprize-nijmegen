@@ -36,7 +36,7 @@ class AssignmentModel(object):
   def __init__(self, appInterface, stimuli):
     self.__app_interface = appInterface
     
-    def makeWordItem(wordDict):
+    def makeWordItem(s):
       wi = WordItem(s["word"].strip().lower())
       wi.translation = s["translation"].strip().lower()
       wi.image = s["image"].strip()
@@ -71,7 +71,7 @@ class AssignmentModel(object):
     inbetweenSessionCountdown = CountdownTimer(TEST_BLOCK_DURATION)
     
     while totalTestTimer.getTime() > 0:
-      presentedItems = filter(lambda x: len(x.presentations) > 0, self.__stimuli)
+      presentedItems = [x for x in self.__stimuli if len(x.presentations) > 0]
       
       stimulus = None
       minActivationStimulus = None

@@ -19,7 +19,7 @@ def report_error():
     error_data = flask.request.get_json(silent=True)
     if error_data is None:
         print("Received invalid error data info:")
-        print(request.data)
+        print(flask.request.data)
     else:
         print(
 f"""JavaScript Error:

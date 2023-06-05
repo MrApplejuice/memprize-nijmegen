@@ -63,8 +63,11 @@ class InstructionsMixin(Confirmable):
             {
                 "fontFamily": "Arial",
                 "fontSize": 24,
-                "fill": 0x000000,
+                "fill": "0xFFFFFF",
             })
+        
+        self._inst__text_field.style.wordWrap = True
+        self._inst__text_field.style.wordWrapWidth = 800
         
     def __assign_instructions(self, text):
         self._inst__instructions = [
@@ -113,7 +116,6 @@ class LearnMixin(Confirmable):
         super().__init__()
         
         self._learn__image_sprite = None
-        self._learn__loader = do_new(PIXI.Loader)
         
         self._learn__sprite_visible = True
         
@@ -156,8 +158,7 @@ class LearnMixin(Confirmable):
             self._learn__image_sprite.visible = self._learn__sprite_visible
     
     def _learn__create_image_sprite(self, image_url):
-        sprite = do_new(PIXI.Sprite["from"], 
-            self._learn__loader.resources[image_url].texture)
+        sprite = PIXI.Sprite.js_from(PIXI.Cache.js_get(image_url))
         sprite.position.set(100, 50)
         x_scale = 600 / sprite.texture.orig.width
         y_scale = (500 - 2 * sprite.position.y) / sprite.texture.orig.height
@@ -174,13 +175,13 @@ class LearnMixin(Confirmable):
         self._learn__destroy_image()
         
         image_url = "resources/images/" + image
-        if self._learn__loader.resources[image_url]:
+        if PIXI.Cache.has(image_url):
             self._learn__create_image_sprite(image_url)
             return True
         else:
-            self._learn__loader.add(image_url)
-            self._learn__loader.load(
-                lambda *_: self._learn__create_image_sprite(image_url))
+            PIXI.Assets.load(image_url).then(
+                lambda *_: self._learn__create_image_sprite(image_url)
+            )
             return False
     
     def learn(self, image, word, translation):
@@ -319,11 +320,13 @@ class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin):
         self.pixi = do_new(PIXI.Application,
             800, 600, 
             {
-                "backgroundColor": 0xA0A0A0
+                "background": "#A0A0A0",
             })
         dom_element.appendChild(self.pixi.view)
         window.pixi_app = self.pixi
         
+        self.pixi.renderer.background.color = "#A0A0A0"
+
         LearnMixin.__init__(self)
         InstructionsMixin.__init__(self)
         TestMixin.__init__(self, dom_element)

@@ -34,7 +34,7 @@ def main():
     stimuli = [
         {
             "word": f"test-{i}",
-            "translation": "ttest",
+            "translation": f"t-{i}",
             "image": f"room{(i+1)%10}.jpg"
         } for i in range(10)
     ]

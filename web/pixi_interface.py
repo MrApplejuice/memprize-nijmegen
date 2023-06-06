@@ -223,6 +223,12 @@ class TestMixin(LearnMixin, Confirmable):
     CORRECT_WORD_WAIT_TIME = 1
     WRONG_WORD_WAIT_TIME = 2
 
+    @property
+    def text_edit_location(self):
+        input_x = int(re.sub("[^0-9]", "", self._test__text_input.css("left")))
+        input_y = int(re.sub("[^0-9]", "", self._test__text_input.css("top")))
+        return (input_x, input_y)
+
     def __init__(self, dom_element):
         super().__init__()
         
@@ -279,12 +285,7 @@ class TestMixin(LearnMixin, Confirmable):
 
         metrics = PIXI.TextMetrics.measureText(translation, self._test__correct_word.style)
 
-        print(self._test__text_input.css("left"), int(self._test__text_input.css("left")))
-        print(metrics)
-        print(metrics.width)
-
-        input_x = int(re.sub("[^0-9]", "", self._test__text_input.css("left")))
-        input_y = int(re.sub("[^0-9]", "", self._test__text_input.css("top")))
+        input_x, input_y = self.text_edit_location
 
         self._test__correct_word.text = real_translation or "[missing]"
         self._test__correct_word.position.x = input_x + 10 + metrics.width
@@ -305,7 +306,7 @@ class TestMixin(LearnMixin, Confirmable):
     def displayCorrect(self, word, entered):
         self._done = False
         self._test__show_words(word.name, entered)
-        self._test__text_input.css("color", "green")
+        self._test__text_input.css("color", "#00FF00")
         self._test__text_input.prop('disabled', True)
         
         window.setTimeout(
@@ -342,7 +343,7 @@ class TestMixin(LearnMixin, Confirmable):
         self.pixi.ticker.start()
         self._done = True
 
-class HighscoreMixin:
+class HighscoreMixin(TestMixin):
     pixi = None
 
     current_highscore = 0
@@ -360,7 +361,61 @@ class HighscoreMixin:
         self._highscore__text.text = f"Highscore: {self.current_highscore}"
         self.pixi.stage.addChild(self._highscore__text)
 
+        self._highscore__jumpy_text = do_new(
+            PIXI.Text,
+            "",
+            {
+                "fontFamily": "Arial",
+                "fontSize": 24,
+                "fill": "#00FF00",
+            })
+        self._highscore__jumpy_text.position.set(600, 550)
+        self._highscore__jumpy_text.text = f"NONE"
+        self._highscore__jumpy_text.visible = False
+        self.pixi.stage.addChild(self._highscore__jumpy_text)
+
+        self._highscore__jump_anim_data = None
+
+        PIXI.Ticker.shared.add(self._highscore__jumpy_text_anim)
+
+    def _highscore__jumpy_text_anim(self, _):
+        if self._highscore__jump_anim_data is None:
+            self._highscore__jumpy_text.visible = False
+        else:
+            self._highscore__jump_anim_data["t_index"] += PIXI.Ticker.shared.elapsedMS
+
+            start_pos = self._highscore__jump_anim_data["start"]
+            end_pos = self._highscore__jump_anim_data["end"]
+            
+            duration = self._highscore__jump_anim_data["duration"]
+            t_index = self._highscore__jump_anim_data["t_index"]
+            if t_index > duration:
+                self._highscore__jump_anim_data = None
+                return
+            
+            f = t_index / duration
+            x = start_pos[0] + (end_pos[0] - start_pos[0]) * f
+            y = start_pos[1] + (end_pos[1] - start_pos[1]) * f - 100 * (1 - (f * 2 - 1)**2)
+
+            self._highscore__jumpy_text.position.set(x, y)
+            self._highscore__jumpy_text.visible = True
+
+    def __start_jumpy_text(self, text):
+        target = self._highscore__text.position
+
+        self._highscore__jumpy_text.text = text
+        self._highscore__jump_anim_data = {
+            "duration": self.CORRECT_WORD_WAIT_TIME * 1000 // 2,
+            "t_index": 0,
+            "start": self.text_edit_location,
+            "end": [target.x + 50, target.y],
+        }
+
     def update_highscore(self, new_score):
+        print("NEW SCORE: ", new_score, self.current_highscore)
+        if new_score > self.current_highscore:
+            self.__start_jumpy_text(f"+{new_score - self.current_highscore}")
+        print(self._highscore__jump_anim_data)
         self.current_highscore = new_score
         self._highscore__text.text = f"Highscore: {self.current_highscore}"
 
@@ -401,9 +456,6 @@ class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin):
     
     def mixedup(self, leftUpper, leftLower, rightUpper, rightLower):
         raise NotImplementedError()
-
-    def updateHighscore(self, score):
-        print(f"Current score: {score}")
 
     def startInbetweenSession(self, imageWordPairs):
         raise NotImplementedError()

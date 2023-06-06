@@ -86,7 +86,7 @@ class ApplicationInterface(object):
     def mixedup(self, leftUpper, leftLower, rightUpper, rightLower):
         raise NotImplementedError()
 
-    def updateHighscore(self, score):
+    def update_highscore(self, score):
         raise NotImplementedError()
 
     def displayInstructions(self):
@@ -209,8 +209,8 @@ class AssignmentModel(object):
         if not self.__app_interface.done:
             return
         
-        print("TODO For testing")
         if self.__state is None:
+            print("TODO For testing")
             self.__state = "instructions"
 
         if self.__state is None:
@@ -225,7 +225,7 @@ class AssignmentModel(object):
             stimulus = self.__state["item"]
             if self.__entered_word == stimulus.translation.lower():
                 self.currentScore += CORRECT_ANSWER_SCORE
-                self.__app_interface.updateHighscore(self.currentScore)
+                self.__app_interface.update_highscore(self.currentScore)
                 
                 self.__app_interface.displayCorrect(
                     stimulus, self.__entered_word)

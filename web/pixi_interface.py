@@ -7,7 +7,6 @@ class Confirmable:
         if self._confirmable_initialized:
             return
         self._confirmable_initialized = True
-        print("INIT CONFIRMABLE")
         
         self._Confirmable__call = None
         window.addEventListener("keydown", self._confirmable__button_pressed)
@@ -125,7 +124,7 @@ class LearnMixin(Confirmable):
             {
                 "fontFamily": "Arial",
                 "fontSize": 24,
-                "fill": 0x000000,
+                "fill": "#FFFFFF",
             })
         self._learn__word_sprite.position.x = 200
         self._learn__word_sprite.position.y = 500
@@ -136,7 +135,7 @@ class LearnMixin(Confirmable):
             {
                 "fontFamily": "Arial",
                 "fontSize": 24,
-                "fill": 0x000000,
+                "fill": "#FFFFFF",
             })
         self._learn__translation_sprite.position.x = 500
         self._learn__translation_sprite.position.y = 500
@@ -235,7 +234,7 @@ class TestMixin(LearnMixin, Confirmable):
             {
                 "fontFamily": "Arial",
                 "fontSize": 24,
-                "fill": 0x000000,
+                "fill": "#FFFFFF",
             })
         self._test__word_sprite.position.x = 200
         self._test__word_sprite.position.y = 500
@@ -259,7 +258,7 @@ class TestMixin(LearnMixin, Confirmable):
         
         self._test__text_input.val(translation)
         self._test__text_input.css("display", "block")
-        self._test__text_input.css("color", "")
+        self._test__text_input.css("color", "white")
         self._test__text_input.css("text-decoration", "")
         self._test__text_input.prop('disabled', False)
         self._test__text_input.focus()
@@ -312,7 +311,29 @@ class TestMixin(LearnMixin, Confirmable):
         self.pixi.ticker.start()
         self._done = True
 
-class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin):
+class HighscoreMixin:
+    pixi = None
+
+    current_highscore = 0
+
+    def __init__(self):
+        self._highscore__text = do_new(
+            PIXI.Text,
+            "",
+            {
+                "fontFamily": "Arial",
+                "fontSize": 24,
+                "fill": "#FFFFFF",
+            })
+        self._highscore__text.position.set(600, 550)
+        self._highscore__text.text = f"Highscore: {self.current_highscore}"
+        self.pixi.stage.addChild(self._highscore__text)
+
+    def update_highscore(self, new_score):
+        self.current_highscore = new_score
+        self._highscore__text.text = f"Highscore: {self.current_highscore}"
+
+class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin):
     def __init__(self, dom_element):
         self.__done = True
         self.done_callback = None
@@ -330,6 +351,7 @@ class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin):
         LearnMixin.__init__(self)
         InstructionsMixin.__init__(self)
         TestMixin.__init__(self, dom_element)
+        HighscoreMixin.__init__(self)
 
     @property
     def _done(self):

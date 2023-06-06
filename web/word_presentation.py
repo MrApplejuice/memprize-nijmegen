@@ -209,6 +209,10 @@ class AssignmentModel(object):
         if not self.__app_interface.done:
             return
         
+        print("TODO For testing")
+        if self.__state is None:
+            self.__state = "instructions"
+
         if self.__state is None:
             self.__state = "instructions"
             self.__app_interface.displayInstructions()

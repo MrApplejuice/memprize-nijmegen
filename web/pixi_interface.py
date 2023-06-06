@@ -1,5 +1,8 @@
 import re
 
+LEARNED_WORD_POS = [200, 500]
+TRANSLATED_WORD_POS = [200, 550]
+
 class Confirmable:
     _confirmable_initialized = False
     
@@ -126,8 +129,8 @@ class LearnMixin(Confirmable):
                 "fontSize": 24,
                 "fill": "#FFFFFF",
             })
-        self._learn__word_sprite.position.x = 200
-        self._learn__word_sprite.position.y = 500
+        self._learn__word_sprite.position.x = LEARNED_WORD_POS[0]
+        self._learn__word_sprite.position.y = LEARNED_WORD_POS[1]
 
         self._learn__translation_sprite = do_new(
             PIXI.Text,
@@ -137,8 +140,8 @@ class LearnMixin(Confirmable):
                 "fontSize": 24,
                 "fill": "#FFFFFF",
             })
-        self._learn__translation_sprite.position.x = 500
-        self._learn__translation_sprite.position.y = 500
+        self._learn__translation_sprite.position.x = TRANSLATED_WORD_POS[0]
+        self._learn__translation_sprite.position.y = TRANSLATED_WORD_POS[1]
         
     def _learn__destroy_image(self):
         if self._learn__image_sprite:
@@ -242,8 +245,8 @@ class TestMixin(LearnMixin, Confirmable):
                 "fontSize": 24,
                 "fill": "#FFFFFF",
             })
-        self._test__word_sprite.position.x = 200
-        self._test__word_sprite.position.y = 500
+        self._test__word_sprite.position.x = LEARNED_WORD_POS[0]
+        self._test__word_sprite.position.y = LEARNED_WORD_POS[1]
         self._test__word_sprite.visible = False
         self.pixi.stage.addChild(self._test__word_sprite)
         
@@ -255,15 +258,15 @@ class TestMixin(LearnMixin, Confirmable):
                 "fontSize": 24,
                 "fill": "#00FF00",
             })
-        self._test__correct_word.position.x = 200
-        self._test__correct_word.position.y = 500
+        self._test__correct_word.position.x = LEARNED_WORD_POS[0]
+        self._test__correct_word.position.y = LEARNED_WORD_POS[1]
         self._test__correct_word.visible = False
         self.pixi.stage.addChild(self._test__correct_word)
 
         self._test__text_input = jQuery('<input type="text" value="" />')
         self._test__text_input.css("position", "absolute")
-        self._test__text_input.css("left", "500")
-        self._test__text_input.css("top", "495")
+        self._test__text_input.css("left", str(TRANSLATED_WORD_POS[0] - 2))
+        self._test__text_input.css("top", str(TRANSLATED_WORD_POS[1] - 2))
         self._test__text_input.css("font-size", "24px")
         self._test__text_input.css("color", "white")
         self._test__text_input.css("display", "none")
@@ -419,7 +422,78 @@ class HighscoreMixin(TestMixin):
         self.current_highscore = new_score
         self._highscore__text.text = f"Highscore: {self.current_highscore}"
 
-class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin):
+class MixedUpMixing(Confirmable):
+    def _mixedup__create_text(self, text, pos):
+        result = do_new(
+            PIXI.Text,
+            text,
+            {
+                "fontFamily": "Arial",
+                "fontSize": 24,
+                "fill": "#FFFFFF",
+            }
+        )
+        result.position.set(pos[0], pos[1])
+        result.visible = False
+        self.pixi.stage.addChild(result)
+        return result
+
+    def __init__(self):
+        self._mixedup__instructions = self._mixedup__create_text(
+            "You mixed up two words:",
+            [LEARNED_WORD_POS[0], 400],
+        )
+
+        self._mixedup__display_matrix = [
+            self._mixedup__create_text(
+                "ORG WORD",
+                [LEARNED_WORD_POS[0], LEARNED_WORD_POS[1]],
+            ),
+            self._mixedup__create_text(
+                "ORG WORD",
+                [TRANSLATED_WORD_POS[0], TRANSLATED_WORD_POS[1]],
+            ),
+            self._mixedup__create_text(
+                "ORG WORD",
+                [LEARNED_WORD_POS[0] + 200, LEARNED_WORD_POS[1]],
+            ),
+            self._mixedup__create_text(
+                "ORG WORD",
+                [TRANSLATED_WORD_POS[0] + 200, TRANSLATED_WORD_POS[1]],
+            ),
+        ]
+
+        PIXI.Ticker.shared.add(self._mixedup__increase_size)
+
+    def _mixedup__increase_size(self):
+        for i in self._mixedup__display_matrix:
+            x = i.scale.x
+            x += PIXI.Ticker.shared.elapsedMS / 1000 / 0.2
+            if x > 1:
+                x = 1
+            i.scale.set(x, x)
+
+    def mixedup(self, a1, b1, a2, b2):
+        self._mixedup__instructions.visible = True
+        self._done = False
+
+        def mark_done():
+            self._mixedup__instructions.visible = False
+            for i in self._mixedup__display_matrix:
+                i.visible = False
+            self._done = True
+
+        def show_words():
+            for i, a in zip(self._mixedup__display_matrix, [a1, b1, a2, b2]):
+                i.text = a
+                i.visible = True
+                i.scale.set(0, 0)
+
+            self.confirm(mark_done)
+
+        window.setTimeout(show_words, 1000)
+
+class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, MixedUpMixing):
     def __init__(self, dom_element):
         self.__done = True
         self.done_callback = None
@@ -438,6 +512,7 @@ class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin):
         InstructionsMixin.__init__(self)
         TestMixin.__init__(self, dom_element)
         HighscoreMixin.__init__(self)
+        MixedUpMixing.__init__(self)
 
     @property
     def _done(self):
@@ -454,8 +529,5 @@ class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin):
     def done(self):
         return self._done
     
-    def mixedup(self, leftUpper, leftLower, rightUpper, rightLower):
-        raise NotImplementedError()
-
     def startInbetweenSession(self, imageWordPairs):
         raise NotImplementedError()

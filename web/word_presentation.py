@@ -28,12 +28,13 @@ class WordItemPresentation:
         self.decay = decay
         self.time = time
     
-    def __str__(self):
+    def to_string(self):
         return "(Presentation: decay={d} time={t})".format(d=self.decay, t=self.time)
 
 class WordItem:
     def __init__(self, name):
         self.name = name
+        self.translation = ""
         self.alpha = .25
         self.presentations = []
 
@@ -126,10 +127,9 @@ class AssignmentModel(object):
 
     def findMixedUpWord(self, typedWord):
         typedWord = typedWord.lower().strip()
-        for s in self.__stimuli:
-            if s.presentations:
-                if typedWord == s.translation:
-                    return s
+        for s in self.presented_items:
+            if typedWord == s.translation:
+                return s
         return None
 
     @property
@@ -145,10 +145,14 @@ class AssignmentModel(object):
     def main_timer(self):
         return (js_time() - self.__main_time) / 1000
 
-    def __new_presentation(self):
-        presented_items = [
+    @property
+    def presented_items(self):
+        return [
             x for x in self.__stimuli if len(x.presentations) > 0
         ]
+
+    def __new_presentation(self):
+        presented_items = self.presented_items
         stimulus = None
         min_activation_stimulus = None
         
@@ -175,8 +179,9 @@ class AssignmentModel(object):
 
         new_presentation = WordItemPresentation()
         presentation_start_time = self.main_timer
-        new_presentation.decay = \
-            calculateNewDecay(stimulus, presentation_start_time)
+        new_presentation.decay = calculateNewDecay(
+            stimulus, presentation_start_time
+        )
             
         self.__state = {
             "type": None,
@@ -199,7 +204,6 @@ class AssignmentModel(object):
             self.__app_interface.test(
                 stimulus, entered_word_callback=word_entered)
 
-    @enter_leave_print("__add_presentation")
     def __add_presentation(self, stimulus, presentation, start_time):
         presentation.time = start_time
         stimulus.presentations.append(presentation)
@@ -228,19 +232,25 @@ class AssignmentModel(object):
                 self.__app_interface.update_highscore(self.currentScore)
                 
                 self.__app_interface.displayCorrect(
-                    stimulus, self.__entered_word)
+                    stimulus, self.__entered_word
+                )
             else:
                 stimulus.alpha += ALPHA_ERROR_ADJUSTMENT_SUMMAND
                 self.__state["new_presentation"].decay = calculateNewDecay(
-                    stimulus, self.__state["start_time"])
+                    stimulus, self.__state["start_time"]
+                )
 
-                print("TODO: Mixedup word test!")
-                #mixedUpWord = self.findMixedUpWord(response)
-                #if mixedUpWord:
-                #    self.__app_interface.mixedup(
-                #            stimulus.name, stimulus.translation, mixedUpWord.name, mixedUpWord.translation)
-                #else:
-                self.__app_interface.displayWrong(stimulus, self.__entered_word)
+                mixed_up_word = self.findMixedUpWord(self.__entered_word)
+                if mixed_up_word is not None:
+                    print("Word mixed up! -> ", mixed_up_word.name)
+                    self.__app_interface.mixedup(
+                        stimulus.name,
+                        stimulus.translation,
+                        mixed_up_word.name,
+                        mixed_up_word.translation,
+                    )
+                else:
+                    self.__app_interface.displayWrong(stimulus, self.__entered_word)
         elif self.__state.get("type") in ["learn", "post-test"]:
             self.__add_presentation(
                 self.__state["item"],
@@ -249,8 +259,6 @@ class AssignmentModel(object):
             self.__new_presentation()
         else:
             print("ERROR: ULTIMATE ELSE")
-        
-        
 
 
     def __run(self):

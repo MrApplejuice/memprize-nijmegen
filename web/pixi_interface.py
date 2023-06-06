@@ -222,7 +222,7 @@ class TestMixin(LearnMixin, Confirmable):
     
     CORRECT_WORD_WAIT_TIME = 1
     WRONG_WORD_WAIT_TIME = 2
-    
+
     def __init__(self, dom_element):
         super().__init__()
         
@@ -241,13 +241,27 @@ class TestMixin(LearnMixin, Confirmable):
         self._test__word_sprite.visible = False
         self.pixi.stage.addChild(self._test__word_sprite)
         
+        self._test__correct_word = do_new(
+            PIXI.Text,
+            "",
+            {
+                "fontFamily": "Arial",
+                "fontSize": 24,
+                "fill": "#00FF00",
+            })
+        self._test__correct_word.position.x = 200
+        self._test__correct_word.position.y = 500
+        self._test__correct_word.visible = False
+        self.pixi.stage.addChild(self._test__correct_word)
+
         self._test__text_input = jQuery('<input type="text" value="" />')
         self._test__text_input.css("position", "absolute")
         self._test__text_input.css("left", "500")
         self._test__text_input.css("top", "495")
         self._test__text_input.css("font-size", "24px")
-        self._test__text_input.css("color", "black")
+        self._test__text_input.css("color", "white")
         self._test__text_input.css("display", "none")
+        self._test__text_input.css("font-family", "Arial")
         jQuery(dom_element).append(self._test__text_input)
     
     def _test__show_words(self, word, translation, real_translation=None):
@@ -262,7 +276,20 @@ class TestMixin(LearnMixin, Confirmable):
         self._test__text_input.css("text-decoration", "")
         self._test__text_input.prop('disabled', False)
         self._test__text_input.focus()
-    
+
+        metrics = PIXI.TextMetrics.measureText(translation, self._test__correct_word.style)
+
+        print(self._test__text_input.css("left"), int(self._test__text_input.css("left")))
+        print(metrics)
+        print(metrics.width)
+
+        input_x = int(re.sub("[^0-9]", "", self._test__text_input.css("left")))
+        input_y = int(re.sub("[^0-9]", "", self._test__text_input.css("top")))
+
+        self._test__correct_word.text = real_translation or "[missing]"
+        self._test__correct_word.position.x = input_x + 10 + metrics.width
+        self._test__correct_word.position.y = input_y + 2
+
     def test(self, word, entered_word_callback=None):
         self._done = False
         
@@ -273,7 +300,7 @@ class TestMixin(LearnMixin, Confirmable):
         self.pixi.ticker.stop()
         self.pixi.render()
         
-        self.confirm(self._test__confimed)
+        self.confirm(self._test__confirmed)
         
     def displayCorrect(self, word, entered):
         self._done = False
@@ -282,7 +309,7 @@ class TestMixin(LearnMixin, Confirmable):
         self._test__text_input.prop('disabled', True)
         
         window.setTimeout(
-            lambda *_: self._test__confimed(),
+            lambda *_: self._test__confirmed(),
             1000 * self.CORRECT_WORD_WAIT_TIME)
         
     def displayWrong(self, word, entered):
@@ -290,16 +317,20 @@ class TestMixin(LearnMixin, Confirmable):
         self.learn_prepare_image(word.image)
         
         self._done = False
-        self._test__show_words(word.name, entered)
+        self._test__show_words(word.name, entered, word.translation)
         self._test__text_input.css("color", "red")
         self._test__text_input.css("text-decoration", "line-through")
         self._test__text_input.prop('disabled', True)
+
+        self._test__correct_word.visible = True
         
         window.setTimeout(
-            lambda *_: self._test__confimed(),
+            lambda *_: self._test__confirmed(),
             1000 * self.WRONG_WORD_WAIT_TIME)
 
-    def _test__confimed(self):
+    def _test__confirmed(self):
+        self._test__correct_word.visible = False
+
         self._test__text_input.css("display", "none")
         self._test__word_sprite.visible = False
         self.learn_sprite_visible = False

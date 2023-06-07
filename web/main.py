@@ -30,13 +30,27 @@ def load_all_images(imagePathList):
     return result
 
 
-def main():
+async def load_data():
+    import transcrypt_csv
+
+    data = await asyncMakeRequest("resources/stimuli.csv")
+    return transcrypt_csv.parse_csv(data.strip())
+    
+
+async def main():
+    csv_data = await load_data()
+
+    # Artificial dataset
     stimuli = [
         {
             "word": f"test-{i}",
             "translation": f"t-{i}",
             "image": f"room{(i+1)%10}.jpg"
         } for i in range(10)
+    ]
+
+    stimuli = [
+        dict(zip(["word", "translation", "image"], row)) for row in csv_data[1:]
     ]
     
     pixi_interface = PIXIInterface(

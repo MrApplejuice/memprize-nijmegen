@@ -242,7 +242,6 @@ class AssignmentModel(object):
 
                 mixed_up_word = self.findMixedUpWord(self.__entered_word)
                 if mixed_up_word is not None:
-                    print("Word mixed up! -> ", mixed_up_word.name)
                     self.__app_interface.mixedup(
                         stimulus.name,
                         stimulus.translation,

@@ -45,6 +45,24 @@ function do_new(obj, ...args) {
 function js_time() {
 	return +new Date();
 }
+function asyncMakeRequest(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          resolve(xhr.responseText);
+        } else {
+          reject(new Error('Request failed with status: ' + xhr.status));
+        }
+      }
+    };
+
+    xhr.send();
+  });
+}
 PIXI.Application.prototype.createRenderer = function (options) {
 	return new PIXI.CanvasRenderer(options);
 }

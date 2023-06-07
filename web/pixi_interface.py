@@ -419,12 +419,10 @@ class HighscoreMixin(TestMixin):
         }
 
     def update_highscore(self, new_score):
-        print("NEW SCORE: ", new_score, self.current_highscore)
         if new_score > self.current_highscore:
             self.__start_jumpy_text(f"+{new_score - self.current_highscore}")
-        print(self._highscore__jump_anim_data)
         self.current_highscore = new_score
-        self._highscore__text.text = f"Highscore: {self.current_highscore}"
+        self._highscore__text.text = f"Score: {self.current_highscore}"
 
 class MixedUpMixing(Confirmable):
     def _mixedup__create_text(self, text, pos):

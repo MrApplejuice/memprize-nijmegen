@@ -250,6 +250,7 @@ class TestMixin(LearnMixin, Confirmable):
         self._test__word_sprite.visible = False
         self.pixi.stage.addChild(self._test__word_sprite)
         
+        # TODO: Replace by X, remove _test__correct_word!
         self._test__correct_word = do_new(
             PIXI.Text,
             "",
@@ -320,6 +321,9 @@ class TestMixin(LearnMixin, Confirmable):
         self.learn_sprite_visible = True
         self.learn_prepare_image(word.image)
         
+        if entered.strip() == "":
+            entered = "x"
+
         self._done = False
         self._test__show_words(word.name, entered, word.translation)
         self._test__text_input.css("color", "red")
@@ -398,7 +402,7 @@ class HighscoreMixin(TestMixin):
             
             f = t_index / duration
             x = start_pos[0] + (end_pos[0] - start_pos[0]) * f
-            y = start_pos[1] + (end_pos[1] - start_pos[1]) * f - 100 * (1 - (f * 2 - 1)**2)
+            y = start_pos[1] + (end_pos[1] - start_pos[1]) * f - 200 * (1 - (f * 2 - 1)**2)
 
             self._highscore__jumpy_text.position.set(x, y)
             self._highscore__jumpy_text.visible = True
@@ -408,7 +412,7 @@ class HighscoreMixin(TestMixin):
 
         self._highscore__jumpy_text.text = text
         self._highscore__jump_anim_data = {
-            "duration": self.CORRECT_WORD_WAIT_TIME * 1000 // 2,
+            "duration": 300,
             "t_index": 0,
             "start": self.text_edit_location,
             "end": [target.x + 50, target.y],

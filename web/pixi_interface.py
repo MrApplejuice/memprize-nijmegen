@@ -68,8 +68,9 @@ class InstructionsMixin(Confirmable):
                 "fill": "0xFFFFFF",
             })
         
+        self._inst__text_field.position.set(100, 100)
         self._inst__text_field.style.wordWrap = True
-        self._inst__text_field.style.wordWrapWidth = 800
+        self._inst__text_field.style.wordWrapWidth = 600
         
     def __assign_instructions(self, text):
         self._inst__instructions = [

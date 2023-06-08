@@ -213,9 +213,9 @@ class AssignmentModel(object):
         if not self.__app_interface.done:
             return
         
-        if self.__state is None:
-            print("TODO For testing")
-            self.__state = "instructions"
+        # if self.__state is None:
+        #    print("TODO For testing")
+        #    self.__state = "instructions"
 
         if self.__state is None:
             self.__state = "instructions"

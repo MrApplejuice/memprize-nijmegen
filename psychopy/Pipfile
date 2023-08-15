@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+psychopy = "2023.2.0"
 
 [dev-packages]
 

@@ -265,7 +265,7 @@ class TestMixin(LearnMixin, Confirmable):
         self._test__correct_word.visible = False
         self.pixi.stage.addChild(self._test__correct_word)
 
-        self._test__text_input = jQuery('<input type="text" value="" />')
+        self._test__text_input = jQuery('<input type="text" value="" placeholder="...?" />')
         self._test__text_input.css("position", "absolute")
         self._test__text_input.css("left", str(TRANSLATED_WORD_POS[0] - 2))
         self._test__text_input.css("top", str(TRANSLATED_WORD_POS[1] - 2))
@@ -356,6 +356,9 @@ class HighscoreMixin(TestMixin):
 
     current_highscore = 0
 
+    def _highscore__update_text(self):
+        self._highscore__text.text = f"Score: {self.current_highscore}"
+
     def __init__(self):
         self._highscore__text = do_new(
             PIXI.Text,
@@ -366,7 +369,7 @@ class HighscoreMixin(TestMixin):
                 "fill": "#FFFFFF",
             })
         self._highscore__text.position.set(600, 550)
-        self._highscore__text.text = f"Highscore: {self.current_highscore}"
+        self._highscore__update_text()
         self.pixi.stage.addChild(self._highscore__text)
 
         self._highscore__jumpy_text = do_new(
@@ -423,7 +426,7 @@ class HighscoreMixin(TestMixin):
         if new_score > self.current_highscore:
             self.__start_jumpy_text(f"+{new_score - self.current_highscore}")
         self.current_highscore = new_score
-        self._highscore__text.text = f"Score: {self.current_highscore}"
+        self._highscore__update_text()
 
 class MixedUpMixing(Confirmable):
     def _mixedup__create_text(self, text, pos):

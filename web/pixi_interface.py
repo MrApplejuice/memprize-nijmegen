@@ -143,7 +143,20 @@ class LearnMixin(Confirmable):
             })
         self._learn__translation_sprite.position.x = TRANSLATED_WORD_POS[0]
         self._learn__translation_sprite.position.y = TRANSLATED_WORD_POS[1]
-        
+
+        self._learn__instructions_sprite = do_new(
+            PIXI.Text,
+            "Vorm een beeld bij het woord en druk Enter!",
+            {
+                "fontFamily": "Arial",
+                "fontSize": 18,
+                "fill": "#FFFFFF",
+                "wordWrap": True,
+                "wordWrapWidth": 120,
+            })
+        self._learn__instructions_sprite.position.x = 25
+        self._learn__instructions_sprite.position.y = LEARNED_WORD_POS[1] - 25
+
     def _learn__destroy_image(self):
         if self._learn__image_sprite:
             self.pixi.stage.removeChild(self._learn__image_sprite)
@@ -157,6 +170,7 @@ class LearnMixin(Confirmable):
     @learn_sprite_visible.setter
     def learn_sprite_visible(self, value):
         self._learn__sprite_visible = bool(value)
+        self._learn__instructions_sprite.visible = bool(value)
         if self._learn__image_sprite is not None:
             self._learn__image_sprite.visible = self._learn__sprite_visible
     
@@ -202,6 +216,7 @@ class LearnMixin(Confirmable):
         
         self.pixi.stage.addChild(self._learn__word_sprite)
         self.pixi.stage.addChild(self._learn__translation_sprite)
+        self.pixi.stage.addChild(self._learn__instructions_sprite)
         
         self.pixi.render()
         
@@ -215,6 +230,7 @@ class LearnMixin(Confirmable):
     def _learn__learn_done(self):
         self.pixi.stage.removeChild(self._learn__word_sprite)
         self.pixi.stage.removeChild(self._learn__translation_sprite)
+        self.pixi.stage.removeChild(self._learn__instructions_sprite)
         
         self.learn_sprite_visible = False
         self.pixi.ticker.start()

@@ -524,11 +524,8 @@ class MixedUpMixing(Confirmable):
 
         window.setTimeout(show_words, 1000)
 
-
-class RecapMixin(Confirmable, TranslatableMixin):
+class RecapMixin(LearnMixin, Confirmable, TranslatableMixin):
     def __init__(self):
-        super().__init__()
-
         self._recap__pre_strings = split_block_strings(self.LANG_STRINGS.recap_pre_instructions)
         self._recap__during_strings = split_block_strings(self.LANG_STRINGS.recap_during_instructions)
         self._recap__post_strings = split_block_strings(self.LANG_STRINGS.recap_post_instructions)
@@ -540,7 +537,7 @@ class RecapMixin(Confirmable, TranslatableMixin):
                 "fontFamily": "Arial",
                 "fontSize": 24,
                 "fill": "#FFFFFF",
-                "align": "center",
+                "align": "left",
                 "wordWrap": True,
                 "wordWrapWidth": 500,
                 "visible": False,
@@ -568,8 +565,6 @@ class RecapMixin(Confirmable, TranslatableMixin):
         self.pixi.stage.addChild(self._recap__bottom_text)
 
     def start_recap(self, word_items):
-        print("start recap")
-
         grouped_by_image = {i.image: [] for i in word_items}
         for item in word_items:
             grouped_by_image[item.image].append(item)
@@ -578,33 +573,41 @@ class RecapMixin(Confirmable, TranslatableMixin):
 
         def yield_seq():
             for s in self._recap__pre_strings:
-                yield self._recap__center_text, 10, s
+                yield self._recap__center_text, 10, s, None
 
             for image, item_list in grouped_by_image.items():
                 for s in self._recap__during_strings:
                     words = "  ".join(f"{i.name}={i.translation}" for i in item_list)
                     s = s.format(words=words)
-                    yield self._recap__bottom_text, (1, 15), s
+                    yield self._recap__bottom_text, (1, 15), s, image
             
             for s in self._recap__post_strings:
-                yield self._recap__center_text, (0, 5), s
+                yield self._recap__center_text, (0, 5), s, None
 
         gen = yield_seq()
 
         def run():
+            self.pixi.ticker.stop()
             self._recap__center_text.visible = False
             self._recap__bottom_text.visible = False
+            self.learn_sprite_visible = False
 
             try:
-                pixi_text, timeouts, text = next(gen)
+                pixi_text, timeouts, text, image = next(gen)
             except StopIteration:
                 self._done = True
+                self.pixi.ticker.start()
                 return
             
             forced_timeout, timeout = timeouts
             
             pixi_text.text = text
             pixi_text.visible = True
+            self.pixi.render()
+            if image is not None:
+                self.pixi.ticker.start()
+                self.learn_prepare_image(image)
+                self.learn_sprite_visible = True
 
             self.timed_confirm(run, timeout)
 

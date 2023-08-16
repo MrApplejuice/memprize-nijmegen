@@ -5,6 +5,12 @@ import translations
 LEARNED_WORD_POS = [200, 500]
 TRANSLATED_WORD_POS = [200, 550]
 
+def split_block_strings(blocks):
+    return [
+        t.strip() for t in 
+        re.split("-{5,}", blocks)
+    ]
+
 class TranslatableMixin:
     LANG_STRINGS = translations.Default
 
@@ -48,7 +54,6 @@ class Confirmable:
             self._confirm__timeout = window.setTimeout(
                 lambda *_: self._confirmable_confim(),
                 1000 * timeout)
-    
 
 class InstructionsMixin(Confirmable, TranslatableMixin):
     pixi = None
@@ -76,10 +81,7 @@ class InstructionsMixin(Confirmable, TranslatableMixin):
         self._inst__text_field.style.wordWrapWidth = 600
         
     def __assign_instructions(self, text):
-        self._inst__instructions = [
-            t.strip() for t in 
-            re.split("-{5,}", text)
-        ]
+        self._inst__instructions = split_block_strings(text)
         if self._inst__active:
             self.displayInstructions()
 
@@ -466,6 +468,8 @@ class MixedUpMixing(Confirmable):
         return result
 
     def __init__(self):
+        super().__init__()
+
         self._mixedup__instructions = self._mixedup__create_text(
             "You mixed up two words:",
             [LEARNED_WORD_POS[0], 400],
@@ -520,7 +524,95 @@ class MixedUpMixing(Confirmable):
 
         window.setTimeout(show_words, 1000)
 
-class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, MixedUpMixing):
+
+class RecapMixin(Confirmable, TranslatableMixin):
+    def __init__(self):
+        super().__init__()
+
+        self._recap__pre_strings = split_block_strings(self.LANG_STRINGS.recap_pre_instructions)
+        self._recap__during_strings = split_block_strings(self.LANG_STRINGS.recap_during_instructions)
+        self._recap__post_strings = split_block_strings(self.LANG_STRINGS.recap_post_instructions)
+
+        self._recap__center_text = do_new(
+            PIXI.Text,
+            "",
+            {
+                "fontFamily": "Arial",
+                "fontSize": 24,
+                "fill": "#FFFFFF",
+                "align": "center",
+                "wordWrap": True,
+                "wordWrapWidth": 500,
+                "visible": False,
+            }
+        )
+        self._recap__center_text.position.set(400, 300)
+        self._recap__center_text.anchor.set(0.5)
+        self.pixi.stage.addChild(self._recap__center_text)
+
+        self._recap__bottom_text = do_new(
+            PIXI.Text,
+            "",
+            {
+                "fontFamily": "Arial",
+                "fontSize": 24,
+                "fill": "#FFFFFF",
+                "align": "center",
+                "wordWrap": True,
+                "wordWrapWidth": 500,
+                "visible": False,
+            }
+        )
+        self._recap__bottom_text.position.set(400, 500)
+        self._recap__bottom_text.anchor.set(0.5)
+        self.pixi.stage.addChild(self._recap__bottom_text)
+
+    def start_recap(self, word_items):
+        print("start recap")
+
+        grouped_by_image = {i.image: [] for i in word_items}
+        for item in word_items:
+            grouped_by_image[item.image].append(item)
+
+        self._done = False
+
+        def yield_seq():
+            for s in self._recap__pre_strings:
+                yield self._recap__center_text, 10, s
+
+            for image, item_list in grouped_by_image.items():
+                for s in self._recap__during_strings:
+                    words = "  ".join(f"{i.name}={i.translation}" for i in item_list)
+                    s = s.format(words=words)
+                    yield self._recap__bottom_text, (1, 15), s
+            
+            for s in self._recap__post_strings:
+                yield self._recap__center_text, (0, 5), s
+
+        gen = yield_seq()
+
+        def run():
+            self._recap__center_text.visible = False
+            self._recap__bottom_text.visible = False
+
+            try:
+                pixi_text, timeouts, text = next(gen)
+            except StopIteration:
+                self._done = True
+                return
+            
+            forced_timeout, timeout = timeouts
+            
+            pixi_text.text = text
+            pixi_text.visible = True
+
+            self.timed_confirm(run, timeout)
+
+        run()
+
+
+
+class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, MixedUpMixing, RecapMixin):
     def __init__(self, dom_element):
         self.__done = True
         self.done_callback = None
@@ -540,6 +632,7 @@ class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, Mi
         TestMixin.__init__(self, dom_element)
         HighscoreMixin.__init__(self)
         MixedUpMixing.__init__(self)
+        RecapMixin.__init__(self)
 
     @property
     def _done(self):
@@ -555,6 +648,3 @@ class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, Mi
     @property
     def done(self):
         return self._done
-    
-    def startInbetweenSession(self, imageWordPairs):
-        raise NotImplementedError()

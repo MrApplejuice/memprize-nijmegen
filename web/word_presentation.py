@@ -1,6 +1,13 @@
 import random
 import math
 
+from datatypes import WordItem, WordItemPresentation
+
+def time():
+    return (js_time() - START_TIME) / 1000
+
+START_TIME = js_time()
+
 def enter_leave_print(text):
     def decorate(f):
         def result(*args, **kwargs):
@@ -12,6 +19,13 @@ def enter_leave_print(text):
         return result
     return decorate
 
+class Timer:
+    def __init__(self, duration):
+        self.__start = time()
+        self.__duration = duration
+
+    def remaining_time(self):
+        return self.__duration - (time() - self.__start)
 
 def py_min(seq, key=None):
     if key is None:
@@ -21,22 +35,6 @@ def py_min(seq, key=None):
         for x in seq:
             if key(x) == m:
                 return x
-
-
-class WordItemPresentation:
-    def __init__(self, time=0, decay=0):
-        self.decay = decay
-        self.time = time
-    
-    def to_string(self):
-        return "(Presentation: decay={d} time={t})".format(d=self.decay, t=self.time)
-
-class WordItem:
-    def __init__(self, name):
-        self.name = name
-        self.translation = ""
-        self.alpha = .25
-        self.presentations = []
 
 def _calculateDecayFromActivation(x, alpha):
     """
@@ -49,7 +47,6 @@ def calculateActivation(wordItem, time, leaveout=0):
     if len(wordItem.presentations) - leaveout <= 0:
         raise ValueError("activaton undefined for item that was not presented yet")
     else:
-        #print "Using ", [(time - presentation.time, presentation.decay) for presentation in wordItem.presentations[:len(wordItem.presentations) - leaveout]]
         return math.log(sum([(time - presentation.time)**(-presentation.decay) for presentation in wordItem.presentations[:len(wordItem.presentations) - leaveout]])) #calculate activation of second to last
 
 def calculateNewDecay(wordItem, time, leaveout=0):
@@ -60,8 +57,8 @@ def calculateNewDecay(wordItem, time, leaveout=0):
         return _calculateDecayFromActivation(m, wordItem.alpha)
 
 
-TOTAL_TEST_DURATION = 57 * 60   # seconds
-TEST_BLOCK_DURATION = 25 * 60  # seconds until this block is presented
+# TOTAL_TEST_DURATION = 57 * 60   # seconds - disabled for the online version
+TEST_BLOCK_DURATION = 10  # seconds until this block is presented
 
 ACTIVATION_PREDICTION_TIME_OFFSET = 15  # seconds
 ACTIVATION_THRESHOLD_RETEST = -.8
@@ -120,8 +117,7 @@ class AssignmentModel(object):
         self.__entered_word = None
         
         self.__main_time = js_time()
-        self.__total_test_time = js_time()
-        self.__inbetween_session_time = js_time()
+        self.__intermediate_session_timer = None
 
         self.__state = None
 
@@ -210,6 +206,7 @@ class AssignmentModel(object):
 
     @enter_leave_print("iter_run")
     def iter_run(self):
+        print(self.__app_interface.done, self.__state)
         if not self.__app_interface.done:
             return
         
@@ -220,7 +217,8 @@ class AssignmentModel(object):
         if self.__state is None:
             self.__state = "instructions"
             self.__app_interface.displayInstructions()
-        elif self.__state == "instructions":
+        elif self.__state in ["instructions", "recap"]:
+            self.__intermediate_session_timer = Timer(TEST_BLOCK_DURATION)
             self.__new_presentation()
         elif not isinstance(self.__state, dict):
             print(f"ERROR: Invalid state: {self.__state}")
@@ -255,7 +253,11 @@ class AssignmentModel(object):
                 self.__state["item"],
                 self.__state["new_presentation"],
                 self.__state["start_time"])
-            self.__new_presentation()
+            if self.__intermediate_session_timer.remaining_time() <= 0:
+                self.__state = "recap"
+                self.__app_interface.start_recap(self.presented_items)
+            else:
+                self.__new_presentation()
         else:
             print("ERROR: ULTIMATE ELSE")
 

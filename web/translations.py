@@ -31,4 +31,23 @@ Druk [Enter] om met het oefenen te beginnen! Veel succes!
 
     score_pattern = "Score: {score}"
 
+    recap_pre_instructions = """
+Je hebt al veel woorden geleerd. Laten we eens kijken hoe goed je de woorden onthouden hebt! 
+[Enter]
+---------------
+Ga eerst in gedachten de kamers af waarin je je de woorden voorgesteld hebt. Weet je nog welke kamers je gezien hebt?
+[Enter]
+""".strip()
+    
+    recap_during_instructions = """
+Denk nu aan alle woorden die je je in deze kamer voorgesteld hebt. Druk dan op [Enter]!
+---------------
+Dit zijn de woorden: {words}
+""".strip()
+
+    recap_post_instructions = """
+Goed! Nu ga je weer verder oefenen! [Enter]
+""".strip()
+
+
 Default = NL

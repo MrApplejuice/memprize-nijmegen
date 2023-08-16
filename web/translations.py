@@ -1,3 +1,5 @@
+class NL:
+    instruction_strings = """
 In het komende uur ga je Litouwse woorden leren. Probeer deze woorden zo goed mogelijk te onthouden,
 zodat je ze volgende week op een toets naar het Nederlands kunt vertalen!
 
@@ -22,3 +24,11 @@ Het vertalen helpt je om de woorden te onthouden. Volgende week tijdens de toets
 Een laatste tip: tijdens het oefenen kun je bijna altijd op [Enter] drukken om sneller door te gaan met de volgende trial.
 
 Druk [Enter] om met het oefenen te beginnen! Veel succes!
+
+""".strip()
+    
+    image_learn_instruction = "Vorm een beeld bij het woord en druk Enter!"
+
+    score_pattern = "Score: {score}"
+
+Default = NL

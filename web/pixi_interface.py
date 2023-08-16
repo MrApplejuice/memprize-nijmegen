@@ -1,7 +1,12 @@
 import re
 
+import translations
+
 LEARNED_WORD_POS = [200, 500]
 TRANSLATED_WORD_POS = [200, 550]
+
+class TranslatableMixin:
+    LANG_STRINGS = translations.Default
 
 class Confirmable:
     _confirmable_initialized = False
@@ -45,7 +50,7 @@ class Confirmable:
                 1000 * timeout)
     
 
-class InstructionsMixin(Confirmable):
+class InstructionsMixin(Confirmable, TranslatableMixin):
     pixi = None
     
     def __init__(self):
@@ -55,9 +60,7 @@ class InstructionsMixin(Confirmable):
         self._inst__current_index = None
         
         self._inst__instructions = None
-        jQuery.ajax({
-            "url": "resources/instructions.txt",
-        }).done(self.__assign_instructions)
+        self.__assign_instructions(self.LANG_STRINGS.instruction_strings)
         
         self._inst__text_field = do_new(
             PIXI.Text,
@@ -106,7 +109,7 @@ class InstructionsMixin(Confirmable):
                 self.pixi.render()
                 self.confirm(self.displayInstructions)
                 
-class LearnMixin(Confirmable):
+class LearnMixin(Confirmable, TranslatableMixin):
     pixi = None
     
     LEARN_WAIT_TIMES = [15.0, 15.0] # maximum presentation times before program automatically continues, , PP can move on self-paced earlier
@@ -146,7 +149,7 @@ class LearnMixin(Confirmable):
 
         self._learn__instructions_sprite = do_new(
             PIXI.Text,
-            "Vorm een beeld bij het woord en druk Enter!",
+            self.LANG_STRINGS.image_learn_instruction,
             {
                 "fontFamily": "Arial",
                 "fontSize": 18,
@@ -367,13 +370,15 @@ class TestMixin(LearnMixin, Confirmable):
         self.pixi.ticker.start()
         self._done = True
 
-class HighscoreMixin(TestMixin):
+class HighscoreMixin(TestMixin, TranslatableMixin):
     pixi = None
 
     current_highscore = 0
 
     def _highscore__update_text(self):
-        self._highscore__text.text = f"Score: {self.current_highscore}"
+        self._highscore__text.text = self.LANG_STRINGS.score_pattern.format(
+            score=self.current_highscore
+        )
 
     def __init__(self):
         self._highscore__text = do_new(

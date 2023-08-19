@@ -2,6 +2,8 @@ import re
 
 import translations
 
+from datatypes import ApplicationInterface
+
 LEARNED_WORD_POS = [200, 500]
 TRANSLATED_WORD_POS = [200, 550]
 
@@ -614,8 +616,7 @@ class RecapMixin(LearnMixin, Confirmable, TranslatableMixin):
         run()
 
 
-
-class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, MixedUpMixing, RecapMixin):
+class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, MixedUpMixing, RecapMixin, ApplicationInterface):
     def __init__(self, dom_element):
         self.__done = True
         self.done_callback = None

@@ -1,7 +1,7 @@
 import random
 import math
 
-from datatypes import WordItem, WordItemPresentation
+from datatypes import WordItem, WordItemPresentation, ApplicationInterface
 
 def time():
     return (js_time() - START_TIME) / 1000
@@ -68,36 +68,6 @@ ALPHA_ERROR_ADJUSTMENT_SUMMAND = 0.02
 CORRECT_ANSWER_SCORE = 10
 
 
-class ApplicationInterface(object):
-    def learn(self, image, word, translation):
-        raise NotImplementedError()
-
-    def test(self, word, answerToDisplay, imageAnswer):
-        raise NotImplementedError()
-
-    def displayCorrect(self, typedWord, correctAnswer):
-        raise NotImplementedError()
-
-    def displayWrong(self, typedWord, correctAnswer, image):
-        raise NotImplementedError()
-
-    def mixedup(self, leftUpper, leftLower, rightUpper, rightLower):
-        raise NotImplementedError()
-
-    def update_highscore(self, score):
-        raise NotImplementedError()
-
-    def displayInstructions(self):
-        raise NotImplementedError()
-
-    def startInbetweenSession(self, imageWordPairs):
-        raise NotImplementedError()
-    
-    @property
-    def done(self):
-        return True
-
-
 class AssignmentModel(object):
     __app_interface = None #: :type app_interface: ApplicationInterface
     
@@ -130,6 +100,8 @@ class AssignmentModel(object):
 
     @property
     def stimuliSummary(self):
+        # This is unused atm but can be used to compile a list of 
+        # the presentations etc and send this to a sever or something 
         return [{
             "word": stimulus.name,
             "translation": stimulus.translation,

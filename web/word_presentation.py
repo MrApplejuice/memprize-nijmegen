@@ -225,12 +225,13 @@ class AssignmentModel(object):
         elif self.__state.get("type") == "test":
             self.__state["type"] = "post-test"
             stimulus = self.__state["item"]
-            if self.__entered_word == stimulus.translation.lower():
+            entered_word_normalized = self.__entered_word.lower().strip()
+            if entered_word_normalized.lower() == stimulus.translation.lower():
                 self.currentScore += CORRECT_ANSWER_SCORE
                 self.__app_interface.update_highscore(self.currentScore)
                 
                 self.__app_interface.displayCorrect(
-                    stimulus, self.__entered_word
+                    stimulus, entered_word_normalized
                 )
             else:
                 stimulus.alpha += ALPHA_ERROR_ADJUSTMENT_SUMMAND
@@ -238,7 +239,7 @@ class AssignmentModel(object):
                     stimulus, self.__state["start_time"]
                 )
 
-                mixed_up_word = self.findMixedUpWord(self.__entered_word)
+                mixed_up_word = self.findMixedUpWord(entered_word_normalized)
                 if mixed_up_word is not None:
                     self.__app_interface.mixedup(
                         stimulus.name,

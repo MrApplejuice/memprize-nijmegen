@@ -2,9 +2,18 @@ TRANSCRYPT ?= transcrypt
 BIND_HOST ?= 127.0.0.1
 BIND_PORT ?= 5000
 
-.PHONY: all build export testserver buildloop
+.PHONY: all build export testserver buildloop video
 
-all: build export
+all: build export video
+
+video_files ?= public-domain-placeholder.mp4 org_360p.mp4 org_480p.mp4 org_720p.mp4
+existing_video_files = $(foreach f,$(video_files),$(shell [ -e ../introvideo/$(f) ] && echo ../introvideo/$(f) ))
+video_source = $(firstword $(existing_video_files))
+
+video: resources/video/intro.mp4
+
+resources/video/intro.mp4: $(video_source)
+	cp $< $@
 
 build:
 	$(TRANSCRYPT) -b -m -n -k -o -g main.py

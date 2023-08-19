@@ -210,10 +210,6 @@ class AssignmentModel(object):
         if not self.__app_interface.done:
             return
         
-        # if self.__state is None:
-        #    print("TODO For testing")
-        #    self.__state = "instructions"
-
         if self.__state is None:
             self.__state = "instructions"
             self.__app_interface.displayInstructions()
@@ -261,43 +257,3 @@ class AssignmentModel(object):
                 self.__new_presentation()
         else:
             print("ERROR: ULTIMATE ELSE")
-
-
-    def __run(self):
-        while totalTestTimer.getTime() > 0:
-
-
-            # print "Presented items:\n    ", "\n
-            # ".join([str((calculateActivation(s, predictionTime), s.name, s.alpha,
-            # map(str, s.presentations))) for s in presentedItems])
-
-
-            if len(stimulus.presentations) == 0:
-                # First presentation of stimulus
-                #self.__app_interface.learn(
-                #        stimulus.image, stimulus.name, stimulus.translation)
-                pass
-            else:
-                # Second presentations of stimulus
-                response = self.__app_interface.test(stimulus.name)
-
-                #if not response.lower() == stimulus.translation.lower():
-
-            newPresentation.time = presentationStartTime
-            stimulus.presentations.append(newPresentation)
-
-            if inbetweenSessionCountdown.getTime() <= 0:
-                imageWordPairs = {}
-                imageSequence = []
-                for stimulus in self.__stimuli:
-                    if stimulus.presentations:
-                        translationData = (stimulus.name, stimulus.translation)
-                        if stimulus.image in imageWordPairs:
-                            imageWordPairs[stimulus.image].append(translationData)
-                        else:
-                            imageWordPairs[stimulus.image] = [translationData]
-                            imageSequence.append(stimulus.image)
-
-                self.__app_interface.startInbetweenSession(
-                        [(image, imageWordPairs[image]) for image in imageSequence])
-                inbetweenSessionCountdown = CountdownTimer(TEST_BLOCK_DURATION)

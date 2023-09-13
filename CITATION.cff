@@ -1,0 +1,68 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Memprize Submission by Team Radboud University
+type: software
+message: >-
+  If you use this software, please cite it using these
+  metadata.
+abstract: >-
+  Winning entry of the 2016/2017 memprize science
+  competition,  submitted by a team of researchers from
+  Radboud University Nijmegen.
+keywords:
+  - learning
+  - memory
+  - vocabulary
+  - psychology
+  - mnemonics
+repository-code: 'https://github.com/MrApplejuice/memprize-nijmegen'
+url: 'https://tbd.craftware.info/not-yet-existing'
+license: MIT
+commit: '12341233412334'
+version: '1.0'
+date-released: '2023-09-13'
+authors:
+  - given-names: Gesa S.E.
+    family-names: van den Broek
+    affiliation: >-
+      Utrecht University, Department of Education, The
+      Netherlands
+  - affiliation: >-
+      Department of Radiology, Nuclear Medicine and Anatomy,
+      Radboud University Medical Center, P.O. Box 9101, 6500
+      HB Nijmegen, the Netherlands
+    family-names: Gerke
+    given-names: Paul K.
+    orcid: 'https://orcid.org/0000-0003-1473-5705'
+  - given-names: Anke Marit
+    family-names: Albers
+    affiliation: >-
+      Donders Institute for Brain, Cognition, and Behaviour,
+      Radboud University Medical Center, Nijmegen, The
+      Netherlands
+  - given-names: Ruud
+    family-names: Berkers
+    affiliation: >-
+      Donders Institute for Brain, Cognition, and Behaviour,
+      Radboud University Medical Center, Nijmegen, The
+      Netherlands
+  - given-names: Marlieke
+    family-names: van Kesteren
+    affiliation: >-
+      Donders Institute for Brain, Cognition, and Behaviour,
+      Radboud University Medical Center, Nijmegen, The
+      Netherlands
+  - given-names: Boris
+    family-names: Konrad
+    affiliation: >-
+      Donders Institute for Brain, Cognition, and Behaviour,
+      Radboud University Medical Center, Nijmegen, The
+      Netherlands
+  - given-names: Nils
+    family-names: Müller
+    affiliation: >-
+      Donders Institute for Brain, Cognition, and Behaviour,
+      Radboud University Medical Center, Nijmegen, The
+      Netherlands

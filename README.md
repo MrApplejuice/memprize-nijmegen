@@ -9,6 +9,13 @@ The repository contains two versions of the experiment backing the submission:
     newest Psychopy 2023.02.0 release.
 2. A web-implementation of the same algorithm that can run in the browser.
 
+## Copying and license
+
+The source code is published under the MIT License, see [LICENSE.md](LICENSE.md).
+
+The _images_ in this repository are published under a variety of licenses.
+Refer to the [IMAGE-ATTRIBUTIONS.md](IMAGE-ATTRIBUTIONS.md) for details.
+
 ## Web version
 
 ...

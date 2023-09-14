@@ -24,5 +24,23 @@ jobs:
         run: pipenv install
       - name: Build install
         run: pipenv run make install
-      - name: Package install
-        run: "cd install && tar cfvz ../../github-pages.tar.gz ./*"
+      - name: Upload Pages artifact
+        with:
+          path: install
+        uses: actions/upload-pages-artifact@v2
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

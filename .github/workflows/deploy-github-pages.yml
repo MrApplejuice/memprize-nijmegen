@@ -7,14 +7,8 @@ on:
       - master
 
 jobs:
-  prepare:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.0.0
-      - name: Install pipenv
-        run: pip install pipenv
   build:
+    runs-on: ubuntu-22.04
     needs: prepare
     runs-on: ubuntu-22.04
     defaults:
@@ -22,11 +16,16 @@ jobs:
         shell: bash
         working-directory: web
     steps:
-     - name: Test
-       run: ls -lah && pwd
-     - name: Setup pipenv build environment
-       run: pipenv install
-     - name: Build install
-       run: pipenv run make install
-     - name: Package install
-       run: "cd install && tar cfvz ../../github-pages.tar.gz ./*"
+      - name: Checkout
+        uses: actions/checkout@v4.0.0
+        working-directory: .
+      - name: Install pipenv
+        run: pip install pipenv
+      - name: Test
+        run: ls -lah && pwd
+      - name: Setup pipenv build environment
+        run: pipenv install
+      - name: Build install
+        run: pipenv run make install
+      - name: Package install
+        run: "cd install && tar cfvz ../../github-pages.tar.gz ./*"

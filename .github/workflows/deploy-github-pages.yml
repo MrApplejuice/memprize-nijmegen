@@ -1,0 +1,30 @@
+name: Deploy main branch to gitub pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.0.0
+      - name: Install pipenv
+        run: pip install pipenv
+  build:
+    needs: prepare
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web
+    steps:
+     - name: Setup pipenv build environment
+       run: pipenv install
+     - name: Build install
+       run: pipenv run make install
+     - name: Package install
+       run: "cd install && tar cfvz ../../github-pages.tar.gz ./*"

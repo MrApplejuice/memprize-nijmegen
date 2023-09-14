@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    needs: prepare
-    runs-on: ubuntu-22.04
     defaults:
       run:
         shell: bash
@@ -18,7 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.0.0
-        working-directory: .
       - name: Install pipenv
         run: pip install pipenv
       - name: Test

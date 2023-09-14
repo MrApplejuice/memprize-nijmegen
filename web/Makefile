@@ -11,7 +11,7 @@ video_files ?= public-domain-placeholder.mp4 org_360p.mp4 org_480p.mp4 org_720p.
 existing_video_files = $(foreach f,$(video_files),$(shell [ -e ../introvideo/$(f) ] && echo ../introvideo/$(f) ))
 video_source = $(firstword $(existing_video_files))
 install_files = \
-	index.html pixi.js  pixi.js.map  pixi-legacy.js  pixi-legacy.js.map \
+	index.html pixi.js  pixi.js.map  pixi-legacy.js  pixi-legacy.js.map jquery-3.7.1.min.js \
 	__target__ \
 	resources \
 
@@ -35,5 +35,6 @@ testserver:
 
 install: build
 	mkdir -p $(INSTALL_PREFIX)
+	rm -rf $(INSTALL_PREFIX)/*
 	cp -r $(install_files) \
 		$(INSTALL_PREFIX)/.

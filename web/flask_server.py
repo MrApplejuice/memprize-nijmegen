@@ -27,4 +27,3 @@ f"""JavaScript Error:
 - source: "{ error_data.get("source") }" (line: { error_data.get("line_number") }, char { error_data.get("column_number") })
 """)
     return flask.Response("OK", mimetype="text/plain")
-    

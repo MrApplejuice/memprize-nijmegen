@@ -20,8 +20,10 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./web
+        working-directory: web
     steps:
+     - name: Test
+       run: ls -lah && pwd
      - name: Setup pipenv build environment
        run: pipenv install
      - name: Build install

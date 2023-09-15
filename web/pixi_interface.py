@@ -7,6 +7,9 @@ from datatypes import ApplicationInterface
 LEARNED_WORD_POS = [200, 500]
 TRANSLATED_WORD_POS = [200, 550]
 
+def pixipt(x, y):
+    return do_new(PIXI.Point, x, y)
+
 def split_block_strings(blocks):
     return [
         t.strip() for t in 
@@ -56,6 +59,86 @@ class Confirmable:
             self._confirm__timeout = window.setTimeout(
                 lambda *_: self._confirmable_confim(),
                 1000 * timeout)
+
+class InstructionVideoMixin(Confirmable):
+    def __init__(self):
+        super().__init__()
+
+        self._instvid__video_sprite = None
+        self._instvid__video = None
+
+        g = self._instvid__play_container = do_new(PIXI.Graphics)
+        g.beginFill(0x101010).drawRoundedRect(0, 0, 400, 200, 20)
+        g.anchor = pixipt(0.5, 0.5)
+        g.position = pixipt(200, 200)
+
+        g = arrow = do_new(PIXI.Graphics)
+
+        g.beginFill(0xffffff, 0.8).moveTo(0, 0).lineTo(50, 50).lineTo(0, 100).lineTo(0, 0).lineTo(50, 50)
+        g.setTransform(200 - 25, 100)
+        g.scale = pixipt(1, 0.6)
+
+
+        self._instvid__play_container.addChild(arrow)
+        
+        start_text = do_new(
+            PIXI.Text,
+            "Start instructions video",
+            {
+                "fontFamily": "Arial",
+                "fontSize": 24,
+                "fill": "#FFFFFF",
+            }
+        )
+        start_text.position = pixipt(200, 30)
+        start_text.anchor = pixipt(0.5, 0)
+        self._instvid__play_container.addChild(start_text)
+
+        self._instvid__play_container.interactive = True
+        self._instvid__play_container.cursor = 'pointer'
+
+        self._instvid__play_container.on("pointertap", self._instvid__start_clicked)
+
+    def _instvid__start_clicked(self):
+        VIDEO_URL = "resources/video/intro.mp4"
+
+        self.pixi.stage.removeChild(self._instvid__play_container)
+        self._instvid__video = PIXI.Texture.js_from(VIDEO_URL)
+
+        self._instvid__video_sprite = do_new(
+            PIXI.Sprite,
+            self._instvid__video,
+            {}
+        )
+        self._instvid__video_sprite.width = 800
+        self._instvid__video_sprite.height = 800 / 16 * 9
+        self._instvid__video_sprite.anchor = pixipt(0.5, 0.5)
+        self._instvid__video_sprite.position = pixipt(400, 300)
+
+        self.pixi.stage.addChild(self._instvid__video_sprite)
+
+        self._instvid__video_sprite.texture.baseTexture.resource.source.addEventListener(
+            "ended", self._instvid__cleanup
+        )
+        
+    def _instvid__cleanup(self):
+        self.pixi.stage.removeChild(self._instvid__play_container)
+
+        if self._instvid__video_sprite != None:
+            self.pixi.stage.removeChild(self._instvid__video_sprite)
+            self._instvid__video_sprite.destroy()
+            self._instvid__video_sprite = None
+
+        if self._instvid__video != None:
+            self._instvid__video.destroy()
+            self._instvid__video = None
+
+        self._done = True
+
+    def showInstructionVideo(self):
+        self._done = False
+        self.pixi.stage.addChild(self._instvid__play_container)
+
 
 class InstructionsMixin(Confirmable, TranslatableMixin):
     pixi = None
@@ -616,7 +699,16 @@ class RecapMixin(LearnMixin, Confirmable, TranslatableMixin):
         run()
 
 
-class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, MixedUpMixing, RecapMixin, ApplicationInterface):
+class PIXIInterface(
+    InstructionVideoMixin,
+    InstructionsMixin,
+    LearnMixin,
+    TestMixin,
+    HighscoreMixin,
+    MixedUpMixing,
+    RecapMixin,
+    ApplicationInterface
+):
     def __init__(self, dom_element):
         self.__done = True
         self.done_callback = None
@@ -632,6 +724,7 @@ class PIXIInterface(InstructionsMixin, LearnMixin, TestMixin, HighscoreMixin, Mi
         self.pixi.renderer.background.color = "#A0A0A0"
 
         LearnMixin.__init__(self)
+        InstructionVideoMixin.__init__(self)
         InstructionsMixin.__init__(self)
         TestMixin.__init__(self, dom_element)
         HighscoreMixin.__init__(self)

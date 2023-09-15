@@ -183,6 +183,9 @@ class AssignmentModel(object):
             return
         
         if self.__state is None:
+            self.__state = "instructions video"
+            self.__app_interface.showInstructionVideo()
+        elif self.__state == "instructions video":
             self.__state = "instructions"
             self.__app_interface.displayInstructions()
         elif self.__state in ["instructions", "recap"]:

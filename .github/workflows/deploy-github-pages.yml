@@ -1,0 +1,46 @@
+name: Deploy main branch to gitub pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.0.0
+      - name: Install pipenv
+        run: pip install pipenv
+      - name: Test
+        run: ls -lah && pwd
+      - name: Setup pipenv build environment
+        run: pipenv install
+      - name: Build install
+        run: pipenv run make install
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "web/install/"
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

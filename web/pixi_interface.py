@@ -125,11 +125,13 @@ class InstructionVideoMixin(Confirmable):
         self.pixi.stage.removeChild(self._instvid__play_container)
         self._instvid__video = PIXI.Texture.js_from(VIDEO_URL)
 
-        self._instvid__video_sprite = do_new(
+        video_sprite = self._instvid__video_sprite = do_new(
             PIXI.Sprite,
             self._instvid__video,
             {}
         )
+        video_source = video_sprite.texture.baseTexture.resource.source
+        
         self._instvid__video_sprite.width = 800
         self._instvid__video_sprite.height = 800 / 16 * 9
         self._instvid__video_sprite.anchor = pixipt(0.5, 0.5)
@@ -137,7 +139,17 @@ class InstructionVideoMixin(Confirmable):
 
         self.pixi.stage.addChild(self._instvid__video_sprite)
 
-        self._instvid__video_sprite.texture.baseTexture.resource.source.addEventListener(
+        # When playback start is delayed a _lot_ we might still need to clean things
+        # up because someone clicked "skip" before playback even started
+
+        def watchdog_cleanup():
+            if self._instvid__video_sprite is None:
+                window.clearInterval(interval_id)
+                video_source.pause()
+
+        interval_id = window.setInterval(watchdog_cleanup, 100)
+
+        video_source.addEventListener(
             "ended", self._instvid__cleanup
         )
         self.pixi.stage.addChild(self._instvid__skip_container)

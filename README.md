@@ -18,7 +18,9 @@ Refer to the [IMAGE-ATTRIBUTIONS.md](IMAGE-ATTRIBUTIONS.md) for details.
 
 ## Web version
 
-...
+You can try out the web version here: [https://memprize.craftware.info/](https://memprize.craftware.info/)
+
+![Example of the web version](doc/webversion.png)
 
 ## The original Psychopy version
 

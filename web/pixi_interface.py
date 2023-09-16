@@ -141,17 +141,15 @@ class InstructionVideoMixin(Confirmable):
 
         # When playback start is delayed a _lot_ we might still need to clean things
         # up because someone clicked "skip" before playback even started
-
         def watchdog_cleanup():
-            if self._instvid__video_sprite is None:
-                window.clearInterval(interval_id)
-                video_source.pause()
+            if video_source.readyState > 2:
+                if self._instvid__video_sprite is None:
+                    window.clearInterval(interval_id)
+                    video_source.pause()
 
         interval_id = window.setInterval(watchdog_cleanup, 100)
 
-        video_source.addEventListener(
-            "ended", self._instvid__cleanup
-        )
+        video_source.addEventListener("ended", self._instvid__cleanup)
         self.pixi.stage.addChild(self._instvid__skip_container)
 
     def _instvid__cleanup(self):

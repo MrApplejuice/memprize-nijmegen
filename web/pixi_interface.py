@@ -30,7 +30,7 @@ class Confirmable:
         self._Confirmable__call = None
         window.addEventListener("keydown", self._confirmable__button_pressed)
         
-        jQuery(self.pixi.view).on("click", self._confirmable__clicked)
+        jQuery(self.pixi.view).on("click touchstart", self._confirmable__clicked)
         
         self._confirm__timeout = None
     

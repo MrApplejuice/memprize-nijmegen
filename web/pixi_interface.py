@@ -78,7 +78,6 @@ class InstructionVideoMixin(Confirmable):
         g.setTransform(200 - 25, 100)
         g.scale = pixipt(1, 0.6)
 
-
         self._instvid__play_container.addChild(arrow)
         
         start_text = do_new(
@@ -96,8 +95,29 @@ class InstructionVideoMixin(Confirmable):
 
         self._instvid__play_container.interactive = True
         self._instvid__play_container.cursor = 'pointer'
-
         self._instvid__play_container.on("pointertap", self._instvid__start_clicked)
+
+        g = self._instvid__skip_container = do_new(PIXI.Graphics)
+        g.beginFill(0x101010).drawRoundedRect(0, 0, 150, 40, 10)
+        g.anchor = pixipt(0.5, 0.5)
+        g.position = pixipt(400 - 75, 550 - 10)
+
+        skip_text = do_new(
+            PIXI.Text,
+            "Skip video",
+            {
+                "fontFamily": "Arial",
+                "fontSize": 24,
+                "fill": "#FFFFFF",
+            }
+        )
+        skip_text.position = pixipt(75, 20)
+        skip_text.anchor = pixipt(0.5, 0.5)
+        g.addChild(skip_text)
+
+        self._instvid__skip_container.interactive = True
+        self._instvid__skip_container.cursor = 'pointer'
+        self._instvid__skip_container.on("pointertap", self._instvid__cleanup)
 
     def _instvid__start_clicked(self):
         VIDEO_URL = "resources/video/intro.mp4"
@@ -120,11 +140,14 @@ class InstructionVideoMixin(Confirmable):
         self._instvid__video_sprite.texture.baseTexture.resource.source.addEventListener(
             "ended", self._instvid__cleanup
         )
-        
+        self.pixi.stage.addChild(self._instvid__skip_container)
+
     def _instvid__cleanup(self):
         self.pixi.stage.removeChild(self._instvid__play_container)
+        self.pixi.stage.removeChild(self._instvid__skip_container)
 
         if self._instvid__video_sprite != None:
+            self._instvid__video_sprite.texture.baseTexture.resource.source.pause()
             self.pixi.stage.removeChild(self._instvid__video_sprite)
             self._instvid__video_sprite.destroy()
             self._instvid__video_sprite = None

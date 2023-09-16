@@ -58,7 +58,7 @@ def calculateNewDecay(wordItem, time, leaveout=0):
 
 
 # TOTAL_TEST_DURATION = 57 * 60   # seconds - disabled for the online version
-TEST_BLOCK_DURATION = 10  # seconds until this block is presented
+TEST_BLOCK_DURATION = 25 * 60  # seconds until this block is presented
 
 ACTIVATION_PREDICTION_TIME_OFFSET = 15  # seconds
 ACTIVATION_THRESHOLD_RETEST = -.8

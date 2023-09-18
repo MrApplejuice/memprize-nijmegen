@@ -16,8 +16,15 @@ def split_block_strings(blocks):
         re.split("-{5,}", blocks)
     ]
 
+
 class TranslatableMixin:
     LANG_STRINGS = translations.Default
+
+class DissolveContextMixin:
+    def dissolve(self):
+        jQuery(".dissolve").css({"overflow": "hidden"})
+        jQuery(".dissolve").animate({"height": 0, "padding": 0, "margin": 0}, 1000)
+        jQuery("body").animate({"background-color": "#707070"}, 2000)
 
 class Confirmable:
     _confirmable_initialized = False
@@ -60,7 +67,7 @@ class Confirmable:
                 lambda *_: self._confirmable_confim(),
                 1000 * timeout)
 
-class InstructionVideoMixin(Confirmable):
+class InstructionVideoMixin(Confirmable, DissolveContextMixin):
     def __init__(self):
         super().__init__()
 
@@ -120,6 +127,8 @@ class InstructionVideoMixin(Confirmable):
         self._instvid__skip_container.on("pointertap", self._instvid__cleanup)
 
     def _instvid__start_clicked(self):
+        self.dissolve()
+
         VIDEO_URL = "resources/video/intro.mp4"
 
         self.pixi.stage.removeChild(self._instvid__play_container)
@@ -740,6 +749,7 @@ class PIXIInterface(
     HighscoreMixin,
     MixedUpMixing,
     RecapMixin,
+    DissolveContextMixin,
     ApplicationInterface
 ):
     def __init__(self, dom_element):
@@ -756,6 +766,7 @@ class PIXIInterface(
         
         self.pixi.renderer.background.color = "#A0A0A0"
 
+        DissolveContextMixin.__init__()
         LearnMixin.__init__(self)
         InstructionVideoMixin.__init__(self)
         InstructionsMixin.__init__(self)

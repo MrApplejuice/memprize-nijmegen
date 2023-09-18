@@ -67,7 +67,7 @@ class Confirmable:
                 lambda *_: self._confirmable_confim(),
                 1000 * timeout)
 
-class InstructionVideoMixin(Confirmable, DissolveContextMixin):
+class InstructionVideoMixin(Confirmable, DissolveContextMixin, TranslatableMixin):
     def __init__(self):
         super().__init__()
 
@@ -89,7 +89,7 @@ class InstructionVideoMixin(Confirmable, DissolveContextMixin):
         
         start_text = do_new(
             PIXI.Text,
-            "Start instructions video",
+            self.LANG_STRINGS.start_video_button,
             {
                 "fontFamily": "Arial",
                 "fontSize": 24,
@@ -105,20 +105,20 @@ class InstructionVideoMixin(Confirmable, DissolveContextMixin):
         self._instvid__play_container.on("pointertap", self._instvid__start_clicked)
 
         g = self._instvid__skip_container = do_new(PIXI.Graphics)
-        g.beginFill(0x101010).drawRoundedRect(0, 0, 150, 40, 10)
+        g.beginFill(0x101010).drawRoundedRect(0, 0, 200, 40, 10)
         g.anchor = pixipt(0.5, 0.5)
-        g.position = pixipt(400 - 75, 550 - 10)
+        g.position = pixipt(400 - 100, 550 - 10)
 
         skip_text = do_new(
             PIXI.Text,
-            "Skip video",
+            self.LANG_STRINGS.skip_video_button,
             {
                 "fontFamily": "Arial",
                 "fontSize": 24,
                 "fill": "#FFFFFF",
             }
         )
-        skip_text.position = pixipt(75, 20)
+        skip_text.position = pixipt(100, 20)
         skip_text.anchor = pixipt(0.5, 0.5)
         g.addChild(skip_text)
 

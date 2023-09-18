@@ -53,6 +53,39 @@ Dit zijn de woorden:
     recap_post_instructions = """
 Goed! Nu ga je weer verder oefenen! [Enter]
 """.strip()
+    
+    start_video_button = "Instructie video starten"
+    skip_video_button = "Video overslaan"
 
 
-Default = NL
+class EN(NL):
+    instruction_strings = """
+In the coming hour you will learn Lithuanian words. Try to remember these words as good as possible such that you can translate them next week to English!
+ 
+[Enter]
+---------------------
+Like we explained in the movie, you will see a background image at the first presentation of a new word.
+
+These images are meant to help you create a clear, lively image for each word.
+ 
+[Enter]
+---------------------
+We strongly advise you to use the method that we explained in the movie. Try at least to think of an image for each word and relate this to the translation. If you think that the rooms do not help you, you can ignore them. It is most important that you remember the words, not the rooms.
+ 
+[Enter]
+---------------------
+During the task you will also practice translating the words. You can submit your translation by pressing ENTER. Translating will help you to remember the words. Next week during the test you will have to translate the words as well.
+ 
+[Enter]
+---------------------
+A last tip: during practice you can press [Enter] almost always to continue to the next trial. 
+
+Press [Enter] to start the task! Good luck!
+
+""".strip()
+
+    start_video_button = "Start instructions video"
+    skip_video_button = "Skip video"
+
+
+Default = EN

@@ -64,27 +64,31 @@ class EN(NL):
     stimuli_file = "stimuli_en.csv"
     
     instruction_strings = """
-In the coming hour you will learn Lithuanian words. Try to remember these words as good as possible such that you can translate them next week to English!
+In the next hour, you will practice Lithuanian words. Please try to remember the words as well as you can, so that you can translate them into Dutch on a test next week. 
  
 [Enter]
 ---------------------
-Like we explained in the movie, you will see a background image at the first presentation of a new word.
+As we explained in the movie, new words are always introduced together with a background image. 
 
-These images are meant to help you create a clear, lively image for each word.
- 
-[Enter]
----------------------
-We strongly advise you to use the method that we explained in the movie. Try at least to think of an image for each word and relate this to the translation. If you think that the rooms do not help you, you can ignore them. It is most important that you remember the words, not the rooms.
- 
-[Enter]
----------------------
-During the task you will also practice translating the words. You can submit your translation by pressing ENTER. Translating will help you to remember the words. Next week during the test you will have to translate the words as well.
- 
-[Enter]
----------------------
-A last tip: during practice you can press [Enter] almost always to continue to the next trial. 
+These images are meant to help you create a clear, vivid image for each word. 
 
-Press [Enter] to start the task! Good luck!
+[Enter]
+---------------------
+We strongly recommend that you try to use the method explained in the movie. In any case, try to come up with an image of the Lithuanian word that you can link to the translation. 
+
+If the background images are not helpful for you, you can ignore them. It is important that you remember the words and their translation, not the background image. 
+ 
+[Enter]
+---------------------
+During practice, you will repeatedly enter the translation of the words. You can submit a translations by pressing [Enter]. 
+
+Translating the words from memory will help you remember them! It helps you prepare for the test next week, where you will also translate the words. 
+ 
+[Enter]
+---------------------
+A last tip: During practice, you can almost always press [Enter] to continue more quickly to the next trial. 
+
+When you are ready, please press [Enter] to start practicing! 
 
 """.strip()
     

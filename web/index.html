@@ -1,8 +1,21 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=800, initial-scale=0.5, user-scalable=1">
+	<meta name="viewport" content="width=800, initial-scale=0.5, user-scalable=0">
 	<style>
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+		h1 {
+			font-size: 32pt;
+			font-weight: bold;
+		}
+
+		p {
+			font-size: 14pt;
+		}
+
 		#page {
 			display: flex;
 			flex-direction: column;
@@ -22,7 +35,7 @@
 
 		.ref {
 			padding-left: 4em;
-			font-size: smaller;
+			font-size: 10pt;
 			color: rgba(0, 0, 0, 0.5)
 		}
 
@@ -105,19 +118,34 @@ PIXI.Application.prototype.createRenderer = function (options) {
 	});
 </script>
 <div id="page">
-	<h1 class="dissolve">Radboudumc University Memprize Prototype</h1>
+	<h1 class="dissolve">Memprize Submission by Team Radboud University</h1>
 	<p class="dissolve">
-		This is the prototype used to evaluate the blablalbalbal lablablabl la
-		blalbal bal lab lab labl a jgfakjef asd;fl asdlfalwf eaw lfaslfawe lwlrf
+		This app is a re-implementation of our submission to the memprize science 
+		competition (Potts et al., 2023). 
 	</p>
 	<p class="dissolve">
-		You can find, contribute, or use this app using the code from GitHub:
+		You can find, contribute, or use the app using the code from GitHub:
 	</p>
 	<p class="dissolve">
 		<a href="https://github.com/MrApplejuice/memprize-nijmegen">https://github.com/MrApplejuice/memprize-nijmegen</a>
 	</p>
+	<p class="dissolve">
+		Please cite as:
+	</p>
 	<p class="ref dissolve">
 		van den Broek, G. S. E., Gerke, P. K., Albers, A. M., Berkers, R., van Kesteren, M., Konrad, B., & Müller, N. (2023). Memprize Submission by Team Radboud University (Version 1.0) [Computer software]. <a href="https://github.com/MrApplejuice/memprize-nijmegen">https://github.com/MrApplejuice/memprize-nijmegen</a>
+	</p>
+	<p class="dissolve">
+		Note: There are minor differences between this app and the original 
+		training. For example, we had to replace some images due to usage rights 
+		and translate the instructions to English. Our participants also could 
+		not skip the instruction video.
+	</p>
+	<p class="dissolve">
+		For information about the competition, refer to:
+	</p>
+	<p class="ref dissolve">
+		Potts, R., van den Broek, G.S.E., Albers, A.M., Balaguer, J., Berkers, R., de Jonge, M., Dhanani, A., Jivani, A., Gerke, P.K., Konrad, B., Küpper-Tetzel, C.E., Hae Li, J., McDaniel, M., Miyatsu, T., Müller, N., Nguyen, K., Reilly, W., Summerfield, C., … Shanks, D.R. (2023). Optimal methods for learning foreign-language vocabulary: An international research competition. [Manuscript submitted for publication]. University College London. 
 	</p>
 	<div id="main"></div>
 </div>

@@ -1,7 +1,8 @@
-# Memprize prototype team Radboudumc
+#  Memprize Submission by Team Radboud University
 
-Reimplementation of the [submission for the memprize competition 2016/2017](https://www.psychologicalscience.org/publications/observer/obsonline/radboud-university-researchers-win-first-memrise-prize.html) organized by
-[memrise](https://www.memrise.com).
+Reimplementation of the [submission for the memprize competition 2016/2017](https://www.psychologicalscience.org/publications/observer/obsonline/radboud-university-researchers-win-first-memrise-prize.html) (Potts et al., 2023)
+
+> Potts, R., van den Broek, G.S.E., Albers, A.M., Balaguer, J., Berkers, R., de Jonge, M., Dhanani, A., Jivani, A., Gerke, P.K., Konrad, B., Küpper-Tetzel, C.E., Hae Li, J., McDaniel, M., Miyatsu, T., Müller, N., Nguyen, K., Reilly, W., Summerfield, C., … Shanks, D.R. (2023). Optimal methods for learning foreign-language vocabulary: An international research competition. [Manuscript submitted for publication]. University College London. 
 
 The repository contains two versions of the experiment backing the submission:
 
@@ -29,6 +30,12 @@ You can try out the web version here: [https://memprize.craftware.info/](https:/
 ![Example of the psychopy version](doc/psychopy-screenshot1.png)
 
 The original version of the experiment for testing the spacing algorithm.
+
+## Citation
+
+Please cite our submission as follows:
+
+> van den Broek, G. S. E., Gerke, P. K., Albers, A. M., Berkers, R., van Kesteren, M., Konrad, B., & Müller, N. (2023). Memprize Submission by Team Radboud University (Version 1.0) [Computer software]. https://github.com/MrApplejuice/memprize-nijmegen 
 
 ## Steps for running
 

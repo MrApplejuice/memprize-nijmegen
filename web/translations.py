@@ -1,4 +1,6 @@
 class NL:
+    stimuli_file = "stimuli_nl.csv"
+
     instruction_strings = """
 In het komende uur ga je Litouwse woorden leren. Probeer deze woorden zo goed mogelijk te onthouden,
 zodat je ze volgende week op een toets naar het Nederlands kunt vertalen!
@@ -59,6 +61,8 @@ Goed! Nu ga je weer verder oefenen! [Enter]
 
 
 class EN(NL):
+    stimuli_file = "stimuli_en.csv"
+    
     instruction_strings = """
 In the coming hour you will learn Lithuanian words. Try to remember these words as good as possible such that you can translate them next week to English!
  
@@ -82,6 +86,31 @@ A last tip: during practice you can press [Enter] almost always to continue to t
 
 Press [Enter] to start the task! Good luck!
 
+""".strip()
+    
+    image_learn_instruction = "Make an image of the word and press [Enter]"
+
+    score_pattern = "Score: {score}"
+
+    recap_pre_instructions = """
+You already practiced quite a lot of words! Let’s see how well you can remember them! 
+
+[Enter]
+---------------
+First, please think of the background images in which you pictured the different words. Do you remember all the rooms that you have seen so far? 
+
+[Enter]
+""".strip()
+    
+    recap_during_instructions = """
+Now please think of the words that you pictured in this location and their translations. Then press [Enter] to see if you remembered them all.
+---------------
+These are the words:
+{words}
+""".strip()
+
+    recap_post_instructions = """
+Well done! Now you can continue practicing the words! [Enter]
 """.strip()
 
     start_video_button = "Start instructions video"

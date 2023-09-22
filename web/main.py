@@ -1,3 +1,5 @@
+import translations
+
 from pixi_interface import PIXIInterface
 from word_presentation import AssignmentModel
 
@@ -8,7 +10,9 @@ IMAGES_LOCATION = (0, 1 - (IMAGES_SIZE / 2 + 0.05))
 async def load_data():
     import transcrypt_csv
 
-    data = await asyncMakeRequest("resources/stimuli.csv")
+    data = await asyncMakeRequest(
+        f"resources/{translations.Default.stimuli_file}"
+    )
     return transcrypt_csv.parse_csv(data.strip())
     
 

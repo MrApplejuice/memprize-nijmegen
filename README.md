@@ -1,8 +1,6 @@
 #  Memprize Submission by Team Radboud University
 
-Reimplementation of the [submission for the memprize competition 2016/2017](https://www.psychologicalscience.org/publications/observer/obsonline/radboud-university-researchers-win-first-memrise-prize.html) (Potts et al., 2023)
-
-> Potts, R., van den Broek, G.S.E., Albers, A.M., Balaguer, J., Berkers, R., de Jonge, M., Dhanani, A., Jivani, A., Gerke, P.K., Konrad, B., Küpper-Tetzel, C.E., Hae Li, J., McDaniel, M., Miyatsu, T., Müller, N., Nguyen, K., Reilly, W., Summerfield, C., … Shanks, D.R. (2023). Optimal methods for learning foreign-language vocabulary: An international research competition. [Manuscript submitted for publication]. University College London. 
+Reimplementation of the [submission for the memprize competition 2016/2017](https://www.psychologicalscience.org/publications/observer/obsonline/radboud-university-researchers-win-first-memrise-prize.html) (Potts et al., 2023)[^1]
 
 The repository contains two versions of the experiment backing the submission:
 
@@ -23,21 +21,23 @@ You can try out the web version here: [https://memprize.craftware.info/](https:/
 
 ![Example of the web version](doc/webversion.png)
 
+See below for details how to run the web version.
+
 ## The original Psychopy version
 
 (Dutch only)
 
 ![Example of the psychopy version](doc/psychopy-screenshot1.png)
 
-The original version of the experiment for testing the spacing algorithm.
+The original version of the experiment for testing the spacing algorithm. See below for details how to run the web version.
 
 ## Citation
 
-Please cite our submission as follows:
+To cite this software in your publications, you can use the [CITATION.cff file through GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files) page or the following reference:
 
 > van den Broek, G. S. E., Gerke, P. K., Albers, A. M., Berkers, R., van Kesteren, M., Konrad, B., & Müller, N. (2023). Memprize Submission by Team Radboud University (Version 1.0) [Computer software]. https://github.com/MrApplejuice/memprize-nijmegen 
 
-## Steps for running
+## Steps for running the original Psychopy version
 
 Required software:
 
@@ -61,7 +61,7 @@ With these packages installed:
 pipenv run python main.py 
 ~~~~~~~~~
 
-## Alternative steps for running
+## Alternative steps for running the original Psychopy version
 
 These steps are easier in case you are not able to install PsychoPy using the
 steps above. These steps will run the program through a pre-built Standalone
@@ -79,3 +79,7 @@ Then:
 
 - Clone the repository
 - Change in the directory `psychopy`
+- Run the experiment's `main.py` file as described in the previous section, but
+  use the python version that ships with psychopy.
+
+[^1]: Potts, R., van den Broek, G.S.E., Albers, A.M., Balaguer, J., Berkers, R., de Jonge, M., Dhanani, A., Jivani, A., Gerke, P.K., Konrad, B., Küpper-Tetzel, C.E., Hae Li, J., McDaniel, M., Miyatsu, T., Müller, N., Nguyen, K., Reilly, W., Summerfield, C., … Shanks, D.R. (2023). Optimal methods for learning foreign-language vocabulary: An international research competition. [Manuscript submitted for publication]. University College London. 

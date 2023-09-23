@@ -7,9 +7,11 @@ type: software
 message: >-
   If you use this software, please cite it using these
   metadata.
+repository-code: 'https://github.com/MrApplejuice/memprize-nijmegen'
+url: 'https://memprize.craftware.info/'
 abstract: >-
   Winning entry of the 2016/2017 memprize science
-  competition,  submitted by a team of researchers from
+  competition, submitted by a team of researchers from
   Radboud University Nijmegen.
 keywords:
   - learning
@@ -17,12 +19,10 @@ keywords:
   - vocabulary
   - psychology
   - mnemonics
-repository-code: 'https://github.com/MrApplejuice/memprize-nijmegen'
-url: 'https://tbd.craftware.info/not-yet-existing'
 license: MIT
-commit: '12341233412334'
 version: '1.0'
-date-released: '2023-09-13'
+date-released: '2023-09-23'
+doi: 10.5281/zenodo.1234
 authors:
   - given-names: Gesa S. E.
     family-names: van den Broek

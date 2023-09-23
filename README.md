@@ -1,4 +1,8 @@
-#  Memprize Submission by Team Radboud University
+[![DOI](https://zenodo.org/badge/93724480.svg)](https://zenodo.org/badge/latestdoi/93724480)
+
+
+
+# Memprize Submission by Team Radboud University
 
 Reimplementation of the [submission for the memprize competition 2016/2017](https://www.psychologicalscience.org/publications/observer/obsonline/radboud-university-researchers-win-first-memrise-prize.html) (Potts et al., 2023)[^1]
 

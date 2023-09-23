@@ -39,7 +39,7 @@ The original version of the experiment for testing the spacing algorithm. See be
 
 To cite this software in your publications, you can use the [CITATION.cff file through GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files) page or the following reference:
 
-> van den Broek, G. S. E., Gerke, P. K., Albers, A. M., Berkers, R., van Kesteren, M., Konrad, B., & Müller, N. (2023). Memprize Submission by Team Radboud University (Version 1.0) [Computer software]. https://github.com/MrApplejuice/memprize-nijmegen 
+> van den Broek, G. S. E., Gerke, P. K., Albers, A. M., Berkers, R., van Kesteren, M., Konrad, B., & Müller, N. (2023). Memprize Submission by Team Radboud University (Version 1.0) [Computer software]. https://doi.org/10.5281/zenodo.8373054
 
 ## Steps for running the original Psychopy version
 
